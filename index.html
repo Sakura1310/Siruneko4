@@ -6,16 +6,81 @@
   <title>しるねこ</title>
 </head>
 
-<body style="background:#fff5f8; text-align:center; font-family:sans-serif; padding:30px;">
+<body style="
+  background:#fff5f8;
+  text-align:center;
+  font-family:sans-serif;
+  padding:30px;
+">
 
-  <h1 style="color:#ff91ad;">🐈 しるねこ</h1>
+  <h1 style="color:#ff91ad;">
+    🐈 しるねこ
+  </h1>
 
-  <p>こんにちは！</p>
-  <p>今日は何を勉強する？</p>
+  <p style="font-size:20px;">
+    今日は何を学ぶ？
+  </p>
 
-  <p>📚 登録販売者</p>
-  <p>💊 お薬について質問する</p>
-  <p>📝 問題を解く</p>
+  <p>
+    学びたいことを入力してね。
+  </p>
+
+  <input
+    id="topic"
+    type="text"
+    placeholder="例：NSAIDs、簿記、英語..."
+    style="
+      width:90%;
+      max-width:400px;
+      padding:15px;
+      border:2px solid #ffb6c9;
+      border-radius:12px;
+      font-size:16px;
+      box-sizing:border-box;
+    "
+  >
+
+  <br><br>
+
+  <button
+    onclick="startLearning()"
+    style="
+      padding:15px 30px;
+      border:none;
+      border-radius:15px;
+      background:#ff91ad;
+      color:white;
+      font-size:18px;
+      font-weight:bold;
+    "
+  >
+    📚 学習をはじめる
+  </button>
+
+  <div
+    id="result"
+    style="
+      margin-top:30px;
+      font-size:18px;
+      color:#555;
+    "
+  ></div>
+
+  <script>
+    function startLearning() {
+      const topic = document.getElementById("topic").value.trim();
+      const result = document.getElementById("result");
+
+      if (topic === "") {
+        result.innerHTML = "🐈 まず、学びたいことを入力してね！";
+        return;
+      }
+
+      result.innerHTML =
+        "🐈「" + topic + "」を一緒に勉強しよう！<br><br>" +
+        "次は、どのくらい知っているか聞いていくね。";
+    }
+  </script>
 
 </body>
 </html>
