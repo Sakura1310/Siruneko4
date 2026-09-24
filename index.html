@@ -10,44 +10,84 @@
 
 <h1 style="color:#555;">🐈 しるねこ</h1>
 
-<p style="font-size:20px;">こんにちは！</p>
+<div id="app">
 
-<h2>今日は何を勉強する？</h2>
+  <p style="font-size:20px;">こんにちは！</p>
 
-<p>知りたいことを自由に入力してね。</p>
+  <h2>今日は何を勉強する？</h2>
 
-<input
-  id="topic"
-  type="text"
-  placeholder="例：NSAIDs、簿記、英語、哲学..."
-  style="width:90%; max-width:400px; padding:14px; font-size:16px; border:1px solid #ddd; border-radius:10px;"
->
+  <p>知りたいことを自由に入力してね。</p>
 
-<br><br>
+  <input
+    id="topic"
+    type="text"
+    placeholder="例：NSAIDs、簿記、英語、哲学..."
+    style="width:90%; max-width:400px; padding:14px; font-size:16px; border:1px solid #ddd; border-radius:10px;"
+  >
 
-<button
-  onclick="startLearning()"
-  style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8; cursor:pointer;"
->
-📚 学習をはじめる
-</button>
+  <br><br>
 
-<div id="result" style="margin-top:30px; font-size:18px;"></div>
+  <button
+    onclick="startLearning()"
+    style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
+  >
+    📚 学習をはじめる
+  </button>
+
+</div>
 
 <script>
+
 function startLearning() {
+
   const topic = document.getElementById("topic").value.trim();
 
   if (!topic) {
-    document.getElementById("result").textContent =
-      "🐈 まず、知りたいことを入力してね！";
+    alert("🐈 まず、知りたいことを入力してね！");
     return;
   }
 
-  document.getElementById("result").innerHTML =
-    "🐈「" + topic + "」を一緒に勉強しよう！<br><br>" +
-    "まずは、あなたがどのくらい知っているか聞いていくね。";
+  document.getElementById("app").innerHTML = `
+
+    <h2>🐈 ${topic}</h2>
+
+    <p style="font-size:19px;">
+      まず、あなたがどのくらい知っているか教えてね。
+    </p>
+
+    <button onclick="chooseLevel('まったく知らない')"
+      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
+      🌱 まったく知らない
+    </button>
+
+    <button onclick="chooseLevel('少し知っている')"
+      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
+      🌿 少し知っている
+    </button>
+
+    <button onclick="chooseLevel('基本は知っている')"
+      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
+      🌳 基本は知っている
+    </button>
+
+    <button onclick="chooseLevel('かなり詳しい')"
+      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
+      🌟 かなり詳しい
+    </button>
+
+    <div id="levelResult" style="margin-top:25px;"></div>
+
+  `;
 }
+
+function chooseLevel(level) {
+
+  document.getElementById("levelResult").innerHTML =
+    "🐈 なるほど！<br><br>あなたは「" + level + "」なんだね。<br><br>" +
+    "次は、あなたに合った学習ルートを考えるよ📚";
+
+}
+
 </script>
 
 </body>
