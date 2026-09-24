@@ -38,9 +38,12 @@
 
 <script>
 
+let topic = "";
+let level = "";
+
 function startLearning() {
 
-  const topic = document.getElementById("topic").value.trim();
+  topic = document.getElementById("topic").value.trim();
 
   if (!topic) {
     alert("🐈 まず、知りたいことを入力してね！");
@@ -75,16 +78,103 @@ function startLearning() {
       🌟 かなり詳しい
     </button>
 
-    <div id="levelResult" style="margin-top:25px;"></div>
+  `;
+}
+
+function chooseLevel(selectedLevel) {
+
+  level = selectedLevel;
+
+  document.getElementById("app").innerHTML = `
+
+    <h2>🐈 ${topic}</h2>
+
+    <p style="font-size:18px;">
+      「${level}」なんだね！
+    </p>
+
+    <h3>📚 学習ルート</h3>
+
+    <div style="background:white; padding:20px; border-radius:15px; max-width:400px; margin:20px auto; text-align:left;">
+
+      <p>① 🌱 基礎を確認する</p>
+
+      <p>② 📖 重要な知識を学ぶ</p>
+
+      <p>③ 🔎 具体例を知る</p>
+
+      <p>④ 💭 自分で考えてみる</p>
+
+      <p>⑤ 🐈 しるねこに説明してみる</p>
+
+    </div>
+
+    <button
+      onclick="beginStudy()"
+      style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
+    >
+      📖 学習をはじめる
+    </button>
 
   `;
 }
 
-function chooseLevel(level) {
+function beginStudy() {
 
-  document.getElementById("levelResult").innerHTML =
-    "🐈 なるほど！<br><br>あなたは「" + level + "」なんだね。<br><br>" +
-    "次は、あなたに合った学習ルートを考えるよ📚";
+  document.getElementById("app").innerHTML = `
+
+    <h2>📖 ${topic}を学ぼう</h2>
+
+    <p style="font-size:18px;">
+      ここから勉強タイム！🐈
+    </p>
+
+    <p>
+      まずは自分で学んでみよう。<br>
+      本や動画、教科書などを使ってOKだよ。
+    </p>
+
+    <br>
+
+    <button
+      onclick="teacherMode()"
+      style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
+    >
+      🐈 しるねこに教える
+    </button>
+
+  `;
+}
+
+function teacherMode() {
+
+  document.getElementById("app").innerHTML = `
+
+    <h2>🐈 先生、教えて！</h2>
+
+    <p style="font-size:18px;">
+      ここからは、あなたが先生だよ。
+    </p>
+
+    <p>
+      「${topic}」について、<br>
+      自分の言葉でしるねこに説明してみてね。
+    </p>
+
+    <textarea
+      placeholder="しるねこに教えてみよう..."
+      style="width:90%; max-width:400px; height:180px; padding:15px; font-size:16px; border:1px solid #ddd; border-radius:10px;"
+    ></textarea>
+
+    <br><br>
+
+    <button
+      style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
+    >
+      🐈 説明する
+    </button>
+
+  `;
 
 }
 
