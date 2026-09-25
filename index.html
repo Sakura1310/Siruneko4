@@ -213,7 +213,10 @@ async function sendExplanation() {
     document.getElementById("app").innerHTML = `
       <h2>🐈 しるねこ</h2>
       <p style="font-size:18px; line-height:1.8;">
-        ${data.reply}
+
+
+      ${data.reply || data.error || "AIから返事がありませんでした。"}
+
       </p>
     `;
 
