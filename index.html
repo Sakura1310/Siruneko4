@@ -219,10 +219,13 @@ async function sendExplanation() {
 
   } catch (error) {
 
-    document.getElementById("app").innerHTML = `
 
 console.error(error);
 alert("AIエラー：" + error.message);
+
+
+    document.getElementById("app").innerHTML = `
+
 
       <h2>🐈 あれ？</h2>
       <p>AIにつながらなかったみたい……。</p>
