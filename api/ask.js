@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     const { topic, level, explanation } = req.body;
 
     const response = await client.responses.create({
-      model: "gpt-5-mini",
+      model: "gpt-5.6-luna",
       instructions: `
 あなたは「しるねこ」という学習アプリのAI生徒です。
 
