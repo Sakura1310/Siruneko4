@@ -179,6 +179,56 @@ function teacherMode() {
 
 }
 
+
+async function sendExplanation() {
+
+  const explanation = document.querySelector("textarea").value;
+
+  if (!explanation.trim()) {
+    alert("🐈 まず、しるねこに説明してみてね！");
+    return;
+  }
+
+  document.getElementById("app").innerHTML = `
+    <h2>🐈 しるねこ考え中...</h2>
+    <p>先生の説明を聞いてるよ！</p>
+  `;
+
+  try {
+
+    const response = await fetch("/api/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        topic: topic,
+        level: level,
+        explanation: explanation
+      })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("app").innerHTML = `
+      <h2>🐈 しるねこ</h2>
+      <p style="font-size:18px; line-height:1.8;">
+        ${data.reply}
+      </p>
+    `;
+
+  } catch (error) {
+
+    document.getElementById("app").innerHTML = `
+      <h2>🐈 あれ？</h2>
+      <p>AIにつながらなかったみたい……。</p>
+      <p>もう一度試してみてね。</p>
+    `;
+
+  }
+}
+
+
 </script>
 
 </body>
