@@ -1,14 +1,30 @@
-// 【503エラー（混雑）対策の自動リトライ付き通信関数】
-async function fetchWithRetry(url, options, retries = 2, delay = 1000) {
-  for (let i = 0; i <= retries; i++) {
-    const response = await fetch(url, options);
-    if (response.status === 503 && i < retries) {
-      console.log(`Google APIが混雑中のため、${delay}ms 後に再試行します (${i + 1}/${retries})...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-      continue;
+// 【① 503混雑時にモデルを変えて自動再試行する通信関数】
+async function fetchWithFallback(models, apiKey, payload) {
+  let lastError = null;
+
+  for (const modelName of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      // 503（混雑中）の場合は次のモデルへ切り替えて試す
+      if (response.status === 503) {
+        console.warn(`モデル ${modelName} が混雑中のため、別のモデルへ切り替えます...`);
+        continue;
+      }
+
+      return response;
+    } catch (err) {
+      lastError = err;
     }
-    return response;
   }
+
+  // すべてのモデルで失敗した場合は最後のエラーを投げる
+  throw lastError || new Error("すべてのモデルが混雑しています。");
 }
 
 export default async function handler(req, res) {
@@ -21,8 +37,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY が設定されていません。" });
   }
 
-  // 安定して動作するモデル名を指定
-  const MODEL_NAME = "gemini-2.5-flash";
+  // 優先順位をつけたモデル一覧（メインが混雑していたら控えへ移動）
+  const MODELS = ["gemini-2.5-flash", "gemini-1.5-flash-latest"];
 
   try {
     const { mode, topic, level, explanation, history } = req.body;
@@ -56,19 +72,10 @@ export default async function handler(req, res) {
   ]
 }`;
 
-      const response = await fetchWithRetry(
-        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              responseMimeType: "application/json"
-            }
-          })
-        }
-      );
+      const response = await fetchWithFallback(MODELS, apiKey, {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: "application/json" }
+      });
 
       const geminiData = await response.json();
 
@@ -97,7 +104,6 @@ export default async function handler(req, res) {
         parts: [{ text: item.content }]
       }));
 
-      // ユーザーからのメッセージ文を分かりやすく構築
       const userMessage = explanation 
         ? `【今回教える内容】\n${explanation}`
         : `【先生からの最初の挨拶】\n今から「${topic}」について勉強を始めるよ！よろしくね！`;
@@ -107,15 +113,10 @@ export default async function handler(req, res) {
         parts: [{ text: userMessage }]
       });
 
-      const response = await fetchWithRetry(
-        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            systemInstruction: {
-              parts: [{
-                text: `あなたは「しるねこ」という学習アプリのAI生徒です。
+      const response = await fetchWithFallback(MODELS, apiKey, {
+        systemInstruction: {
+          parts: [{
+            text: `あなたは「しるねこ」という学習アプリのAI生徒です。
 現在学びたいテーマは【 ${topic || "指定されたテーマ"} 】です。あなたは今からこの「${topic || "指定されたテーマ"}」について、利用者の先生から教えてもらいます。
 
 【あなたの設定・キャラクター】
@@ -129,12 +130,10 @@ export default async function handler(req, res) {
 ・いきなり自分で正解を長く解説しないでください。
 ・利用者の説明を勝手に添削しないでください。
 ・十分に理解できたら「CLEAR」と返してください。`
-              }]
-            },
-            contents: contents
-          })
-        }
-      );
+          }]
+        },
+        contents: contents
+      });
 
       const geminiData = await response.json();
 
