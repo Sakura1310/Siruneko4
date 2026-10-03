@@ -85,7 +85,7 @@ body {
   background: #fff1c9;
 }
 
-/* メインエリア（下部に約2cmの余白を追加して全体を上に浮かせています） */
+/* メインエリア */
 .main-container {
   flex: 1;
   max-width: 800px;
@@ -93,11 +93,11 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 36px 16px; /* ← 下の余白を広げて持ち上げました */
+  padding: 16px 16px 36px 16px;
   overflow: hidden;
 }
 
-/* テーマ表示用バー */
+/* テーマ表示バー */
 .topic-bar {
   background: #fff;
   border: 1px solid #f0e6d2;
@@ -204,7 +204,7 @@ body {
   color: #222;
 }
 
-/* 入力エリア（押しやすいようにパディングも微調整） */
+/* 入力エリア */
 .chat-input-area {
   padding: 14px 16px;
   background: #ffffff;
@@ -243,10 +243,9 @@ body {
   cursor: not-allowed;
 }
 
-/* スマホ用レイアウト微調整 */
 @media (max-width: 600px) {
   .main-container {
-    padding: 12px 12px 40px 12px; /* スマホでは下部余白をやや多めの40pxに設定 */
+    padding: 12px 12px 40px 12px;
   }
 }
 </style>
@@ -282,7 +281,7 @@ body {
   <!-- チャットメインエリア -->
   <div class="chat-container">
     <div class="chat-logs" id="chatLogs">
-      <!-- メッセージがここに表示されます -->
+      <!-- メッセージ表示エリア -->
     </div>
 
     <div class="chat-input-area">
@@ -298,7 +297,7 @@ let currentTopic = "";
 let chatHistory = [];
 
 // 初期化（ページロード時）
-async function initLesson() {
+function initLesson() {
   const urlParams = new URLSearchParams(window.location.search);
   currentTopic = urlParams.get('topic') || "光合成の仕組み";
 
@@ -336,12 +335,11 @@ async function sendMessage() {
 
   if (!text) return;
 
-  // ユーザーメッセージの表示
+  // 1. 画面にユーザーメッセージを表示し、履歴に追加
   appendMessage("user", text);
   chatHistory.push({ role: "user", content: text });
   input.value = "";
 
-  // ボタン非活性化
   input.disabled = true;
   sendBtn.disabled = true;
 
@@ -353,7 +351,7 @@ async function sendMessage() {
         mode: "student",
         topic: currentTopic,
         explanation: text,
-        history: chatHistory
+        history: chatHistory // 正しく交互に並んだ履歴を送信
       })
     });
 
@@ -363,14 +361,15 @@ async function sendMessage() {
       appendMessage("assistant", data.reply);
       chatHistory.push({ role: "assistant", content: data.reply });
 
-      // 会話履歴を自動で保存（memo.html の学習レポート用）
+      // 会話履歴を自動で保存（memo.html 用）
       saveToReportHistory();
     } else {
+      console.error("API応答エラー:", data);
       appendMessage("assistant", "うーん……ちょっとうまく聞き取れなかったにゃ🐱 もう一度教えてほしいにゃ！");
     }
 
   } catch (err) {
-    console.error("エラー:", err);
+    console.error("通信エラー:", err);
     appendMessage("assistant", "ごめんにゃ、通信がうまくつながらなかったにゃ💦 もう一度送信してみてね！");
   } finally {
     input.disabled = false;
@@ -379,7 +378,6 @@ async function sendMessage() {
   }
 }
 
-// エンキー送信対応
 function handleKeyPress(e) {
   if (e.key === "Enter") {
     sendMessage();
@@ -418,7 +416,6 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// 起動処理
 initLesson();
 </script>
 
