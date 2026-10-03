@@ -8,6 +8,9 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY が設定されていません。" });
   }
 
+  // モデル名を定数として定義（今後の変更を容易にするため）
+  const MODEL_NAME = "gemini-3.8-flash";
+
   try {
     const { mode, topic, level, explanation, history } = req.body;
 
@@ -43,8 +46,7 @@ export default async function handler(req, res) {
 }`;
 
       const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -79,22 +81,18 @@ export default async function handler(req, res) {
        ② AI生徒との授業 (mode === "student")
     ===================================== */
     if (mode === "student") {
-      // 会話履歴をGeminiの形式（user / model）に変換
       const contents = (history || []).map(item => ({
         role: item.role === "assistant" ? "model" : "user",
         parts: [{ text: item.content }]
       }));
 
-      // 今回の説明を追加
       contents.push({
         role: "user",
         parts: [{ text: `学習テーマ：${topic}\nこれまでの説明を踏まえた今回の説明：${explanation || "まだ説明はありません"}` }]
       });
 
-const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-
-
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
