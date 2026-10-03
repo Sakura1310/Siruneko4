@@ -129,7 +129,6 @@ body {
   transition: all 0.2s ease;
 }
 
-/* クリックするヘッダー部分 */
 .card-header {
   padding: 18px 20px;
   display: flex;
@@ -196,7 +195,6 @@ body {
   color: #137333;
 }
 
-/* 開閉矢印 */
 .arrow-icon {
   font-size: 14px;
   color: #aaa;
@@ -204,7 +202,6 @@ body {
   padding: 4px;
 }
 
-/* 開いた状態の矢印回転 */
 .report-card.active .arrow-icon {
   transform: rotate(180deg);
 }
@@ -304,6 +301,26 @@ body {
   background: #fdf8ed;
 }
 
+/* 空の状態表示 */
+.empty-card {
+  background: white;
+  border: 1px dashed #e2d7c5;
+  border-radius: 20px;
+  padding: 50px 20px;
+  text-align: center;
+  color: #a89a85;
+}
+
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.empty-text {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.6;
+}
 </style>
 </head>
 
@@ -334,57 +351,46 @@ body {
   </div>
 
   <div class="report-list" id="reportList">
-    <!-- JSでレポートカードがここに挿入されます -->
+    <!-- JSで保存された学習レポートカードのみがここに挿入されます -->
   </div>
 
 </main>
 
 <script>
-// サンプルデータ（保存データがない場合に画像と同じ項目を表示）
-const defaultMemos = [
-  {
-    id: 1,
-    topic: "簿記",
-    date: "2026/10/03 14:06",
-    status: "進行中",
-    history: [
-      { role: "assistant", content: "先生、簿記って、まず何のことなのか教えてほしいにゃ？🐱" },
-      { role: "user", content: "簿記は会社のお金の出し入れを記録するノートのことだよ！" },
-      { role: "assistant", content: "なるほど！お金の記録ノートなんだにゃ！じゃあ、なんでノートをつける必要があるのかにゃ？🐱" }
-    ]
-  },
-  {
-    id: 2,
-    topic: "簿記について",
-    date: "2026/10/03 13:42",
-    status: "進行中",
-    history: [
-      { role: "assistant", content: "先生、簿記について教えてほしいにゃ！🐱" },
-      { role: "user", content: "資産とか負債とか、ルールが決まってるんだよ。" },
-      { role: "assistant", content: "しさん？ふさい？難しそうな言葉だにゃ……詳しく教えてほしいにゃ🐱" }
-    ]
-  }
-];
-
-// 初期化と描画
+// レポートの初期化と描画
 function loadReports() {
   const container = document.getElementById("reportList");
   const countBadge = document.getElementById("reportCount");
 
-  // localStorageから保存データを取得。なければサンプルを表示
-  let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "null");
-  if (!savedData || savedData.length === 0) {
-    savedData = defaultMemos;
-  }
+  // localStorage から実際の保存データのみを取得
+  const savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
 
   countBadge.textContent = `(${savedData.length})`;
   container.innerHTML = "";
 
-  savedData.forEach((item, index) => {
+  // データが1件もない場合の表示
+  if (savedData.length === 0) {
+    container.innerHTML = `
+      <div class="empty-card">
+        <div class="empty-icon">🐾</div>
+        <div class="empty-text">
+          まだ保存された学習レポートはありません🐱<br>
+          授業画面から学習を始めると、ここに記録が届くよ！
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // 保存されているデータがある場合のみ生成（新しい順に表示）
+  savedData.slice().reverse().forEach((item, index) => {
+    // リバース時のインデックス計算
+    const realIndex = savedData.length - 1 - index;
+
     const card = document.createElement("div");
     card.className = "report-card";
 
-    // チャット会話ログの生成
+    // 会話ログの生成
     const historyHtml = (item.history || []).map(msg => {
       if (msg.role === "assistant") {
         return `
@@ -412,7 +418,7 @@ function loadReports() {
           <div class="card-info">
             <div class="card-topic">${escapeHtml(item.topic || "無題のテーマ")}</div>
             <div class="card-meta">
-              <span>📅 ${item.date || "2026/10/03 00:00"}</span>
+              <span>📅 ${item.date || "日時未記録"}</span>
               <span class="${statusClass}">${item.status || "進行中"}</span>
             </div>
           </div>
@@ -427,8 +433,8 @@ function loadReports() {
         </div>
 
         <div class="card-actions">
-          <button class="action-btn" onclick="copyReport(event, ${index})">📋 会話をコピー</button>
-          <button class="action-btn" onclick="deleteReport(event, ${index})">🗑 削除</button>
+          <button class="action-btn" onclick="copyReport(event, ${realIndex})">📋 会話をコピー</button>
+          <button class="action-btn" onclick="deleteReport(event, ${realIndex})">🗑 削除</button>
         </div>
       </div>
     `;
@@ -437,30 +443,32 @@ function loadReports() {
   });
 }
 
-// カードの開閉（アコーディオン）処理
+// カードの開閉処理
 function toggleCard(headerElem) {
   const card = headerElem.parentElement;
   card.classList.toggle("active");
 }
 
-// 削除機能
+// レポートの個別削除
 function deleteReport(event, index) {
-  event.stopPropagation(); // アコーディオンの開閉イベントを止める
+  event.stopPropagation();
   if (confirm("この学習レポートを削除しますか？")) {
-    let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "null") || defaultMemos;
+    let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
     savedData.splice(index, 1);
     localStorage.setItem("mikeneko_memos", JSON.stringify(savedData));
     loadReports();
   }
 }
 
-// コピー機能
+// 会話テキストのコピー処理
 function copyReport(event, index) {
   event.stopPropagation();
-  let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "null") || defaultMemos;
+  let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
   const item = savedData[index];
-  
-  const text = `【学習レポート】${item.topic} (${item.date})\n\n` + 
+
+  if (!item) return;
+
+  const text = `【学習レポート】${item.topic} (${item.date || ''})\n\n` +
     (item.history || []).map(m => `${m.role === 'assistant' ? '🐱' : '👤'}: ${m.content}`).join("\n");
 
   navigator.clipboard.writeText(text).then(() => {
@@ -474,10 +482,9 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// 起動時に読み込み
+// ページロード時に実行
 loadReports();
 </script>
 
 </body>
 </html>
-
