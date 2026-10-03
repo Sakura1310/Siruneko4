@@ -11,15 +11,13 @@ async function fetchWithFallback(models, apiKey, payload) {
         body: JSON.stringify(payload)
       });
 
-      // 200 OK（成功）の場合のみ正常応答として返す
       if (response.ok) {
         return response;
       }
 
-      // 失敗時はGoogleからのエラー詳細ログを出力して次のモデルへ
       const errJson = await response.json().catch(() => ({}));
-      console.warn(`モデル ${modelName} でエラーが発生 (${response.status}):`, errJson?.error?.message || errJson);
-      lastError = new Error(`モデル ${modelName} がエラー (${response.status}) を返しました。`);
+      console.warn(`モデル ${modelName} でエラー発生 (${response.status}):`, errJson?.error?.message || errJson);
+      lastError = new Error(`モデル ${modelName} (${response.status}): ${errJson?.error?.message || "エラー"}`);
 
     } catch (err) {
       console.warn(`モデル ${modelName} 通信例外:`, err);
@@ -40,7 +38,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY が設定されていません。" });
   }
 
-  // 現在正式に提供されている最新モデルのリスト
   const MODELS = [
     "gemini-2.5-flash",
     "gemini-2.5-pro",
@@ -51,48 +48,25 @@ export default async function handler(req, res) {
     const { mode, topic, explanation, history } = req.body;
 
     /* =====================================
-       ① 学習プラン生成 (mode === "plan")
-    ===================================== */
-    if (mode === "plan") {
-      const prompt = `あなたは「しるねこ」という学習アプリの学習設計AIです。
-学びたいテーマ：「${topic}」
-
-このテーマについて、初心者が理解を深めていくためのおすすめ学習ステップを4つ、そして【「${topic}」という分野そのものに関する重要な基礎知識・重要ポイント】を3つ作ってください。
-
-必ず以下のJSON形式のみで出力してください：
-{
-  "steps": ["ステップ1", "ステップ2", "ステップ3", "ステップ4"],
-  "points": ["ポイント1", "ポイント2", "ポイント3"]
-}`;
-
-      const response = await fetchWithFallback(MODELS, apiKey, {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" }
-      });
-
-      const geminiData = await response.json();
-      const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-      const result = JSON.parse(rawText);
-
-      return res.status(200).json({
-        steps: result.steps || [],
-        points: result.points || []
-      });
-    }
-
-    /* =====================================
-       ② AI生徒との授業 (mode === "student")
+       AI生徒との授業 (mode === "student")
     ===================================== */
     if (mode === "student") {
-      const contents = (history || []).map(item => ({
+      // 履歴を Gemini のデータ形式に変換
+      let formattedHistory = (history || []).map(item => ({
         role: item.role === "assistant" ? "model" : "user",
         parts: [{ text: item.content }]
       }));
 
-      if (contents.length === 0 && explanation) {
-        contents.push({
+      // 先頭が model (assistant) の場合は取り除く（Gemini API は先頭が user である必要があるため）
+      while (formattedHistory.length > 0 && formattedHistory[0].role === "model") {
+        formattedHistory.shift();
+      }
+
+      // 万が一履歴が空の場合は、今回の説明メッセージをセット
+      if (formattedHistory.length === 0 && explanation) {
+        formattedHistory.push({
           role: "user",
-          parts: [{ text: `【学習テーマ】${topic}\n${explanation}` }]
+          parts: [{ text: `【学習テーマ: ${topic}】\n${explanation}` }]
         });
       }
 
@@ -114,47 +88,22 @@ export default async function handler(req, res) {
 ・十分に理解できたら「CLEAR」と返してください。`
           }]
         },
-        contents: contents
+        contents: formattedHistory
       });
 
       const geminiData = await response.json();
+
+      if (!response.ok) {
+        console.error("Gemini API Error Detail:", geminiData);
+        return res.status(500).json({
+          error: geminiData.error?.message || "Gemini APIとの通信に失敗しました。"
+        });
+      }
+
       const replyText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
       return res.status(200).json({
         reply: replyText || "うーん……もう少し教えてほしいにゃ🐱"
-      });
-    }
-
-    /* =====================================
-       ③ 会話の自動要約 (mode === "summarize")
-    ===================================== */
-    if (mode === "summarize") {
-      const prompt = `あなたは学習アプリ「しるねこ」の要約AIです。
-以下の「${topic}」に関する授業の会話履歴を読み、ユーザーが学んだ要点と子猫生徒の成長をわかりやすくまとめてください。
-
-会話履歴：
-${JSON.stringify(history || [])}
-
-必ず以下のJSON形式のみで出力してください：
-{
-  "summary": "今回の授業で学んだ内容のわかりやすい要約（2〜3文）",
-  "keyTakeaways": ["学んだ重要ポイント1", "学んだ重要ポイント2", "学んだ重要ポイント3"],
-  "catComment": "子猫生徒からの感謝と感想メッセージ（語尾は「にゃ」）"
-}`;
-
-      const response = await fetchWithFallback(MODELS, apiKey, {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" }
-      });
-
-      const geminiData = await response.json();
-      const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-      const result = JSON.parse(rawText);
-
-      return res.status(200).json({
-        summary: result.summary || "授業の要約を作成しました。",
-        keyTakeaways: result.keyTakeaways || [],
-        catComment: result.catComment || "先生、教えてくれてありがとうにゃ！"
       });
     }
 
