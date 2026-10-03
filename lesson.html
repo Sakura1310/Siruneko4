@@ -1,1 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
 
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>みけねこ授業</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fffdf9;
+  color: #333;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Noto Sans JP",
+    sans-serif;
+}
+
+/* =====================
+   ヘッダー
+===================== */
+
+.header {
+  height: 78px;
+  background: white;
+  border-bottom: 1px solid #f1e8d8;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffb52b,
+      #ff8d00
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 21px;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.brand-sub {
+  color: #999;
+  font-size: 9px;
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav a {
+  width: 37px;
+  height: 37px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  text-decoration: none;
+
+  font-size: 18px;
+  color: #666;
+}
+
+.nav a.active {
+  background: #fff1c8;
+}
+
+
+/* =====================
+   メイン
+===================== */
+
+.main {
+  max-width: 760px;
+  margin: auto;
+
+  padding: 38px 18px 110px;
+}
+
+.status {
+  color: #aaa;
+  font-size: 13px;
+
+  margin-bottom: 4px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.operator {
+  border: 1px solid #f4df9e;
+
+  background: white;
+
+  color: #a66b14;
+
+  border-radius: 25px;
+
+  padding: 10px 13px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =====================
+   カード
+===================== */
+
+.card {
+  margin-top: 25px;
+
+  background: white;
+
+  border: 1px solid #eee9df;
+
+  border-radius: 24px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.04);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.card-icon {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 13px;
+
+  background: #fff0c9;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ed8700;
+
+  font-size: 21px;
+}
+
+
+/* =====================
+   学習ステップ
+===================== */
+
+.steps {
+  margin-top: 20px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 11px;
+
+  margin: 15px 0;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+}
+
+.step-number {
+  width: 27px;
+  height: 27px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #fff8e6;
+
+  color: #df8b13;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+}
+
+
+/* =====================
+   重要ポイント
+===================== */
+
+.point {
+  display: flex;
+
+  gap: 10px;
+
+  margin: 17px 0;
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+.point::before {
+  content: "●";
+
+  color: #f29a26;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================
+   チャット
+===================== */
+
+.chat-card {
+  margin-top: 25px;
+
+  background: white;
+
+  border: 1px solid #eee9df;
+
+  border-radius: 25px;
+
+  overflow: hidden;
+
+  min-height: 520px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  flex: 1;
+
+  padding: 20px 15px;
+
+  overflow-y: auto;
+}
+
+.message {
+  display: flex;
+
+  gap: 11px;
+
+  margin-bottom: 20px;
+}
+
+.cat {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffb52b,
+      #ff8d00
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+}
+
+.bubble {
+  max-width: 85%;
+
+  padding: 13px 15px;
+
+  border-radius: 18px;
+
+  background: #fffdf5;
+
+  border: 1px solid #f4e6bd;
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.user .bubble {
+  background: #fff0ce;
+  border-color: #ffe0a0;
+}
+
+
+/* =====================
+   入力欄
+===================== */
+
+.chat-input-area {
+  border-top: 1px solid #eee9df;
+
+  padding: 12px;
+
+  display: flex;
+
+  gap: 10px;
+
+  align-items: center;
+}
+
+.chat-input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 58px;
+
+  resize: none;
+
+  border: 1px solid #e8e8e8;
+
+  border-radius: 19px;
+
+  outline: none;
+
+  padding: 13px;
+
+  font-size: 14px;
+
+  font-family: inherit;
+}
+
+.chat-input:focus {
+  border-color: #ffd681;
+}
+
+.send-button {
+  width: 55px;
+  height: 55px;
+
+  border: 0;
+
+  border-radius: 19px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffe9ad,
+      #ffc987
+    );
+
+  color: white;
+
+  font-size: 21px;
+
+  cursor: pointer;
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+}
+
+
+/* =====================
+   読み込み
+===================== */
+
+.loading {
+  text-align: center;
+
+  padding: 35px 10px;
+
+  color: #aaa;
+
+  font-size: 14px;
+}
+
+
+/* =====================
+   チャット編集
+===================== */
+
+.chat-edit {
+  position: fixed;
+
+  right: 14px;
+  bottom: 14px;
+
+  border: 0;
+
+  border-radius: 18px;
+
+  padding: 13px 18px;
+
+  background: #111;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 7px 25px rgba(0,0,0,0.18);
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================
+     ヘッダー
+===================== -->
+
+<header class="header">
+
+  <div class="brand">
+
+    <div class="brand-icon">
+      🐾
+    </div>
+
+    <div>
+
+      <div class="brand-name">
+        みけねこ授業
+      </div>
+
+      <div class="brand-sub">
+        教えて学ぶ・ふりかえる
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <a href="lesson.html"
+       class="active">
+      🎓
+    </a>
+
+    <a href="memo.html">
+      📖
+    </a>
+
+    <a href="review.html">
+      📝
+    </a>
+
+  </nav>
+
+</header>
+
+
+
+<main class="main">
+
+
+  <div class="status">
+    🐱 授業中
+  </div>
+
+
+  <div class="title-row">
+
+    <h1
+      class="title"
+      id="topicTitle">
+      読み込み中…
+    </h1>
+
+    <button class="operator">
+      🐾 AIオペレーターに相談 ↗
+    </button>
+
+  </div>
+
+
+
+  <!-- =====================
+       学習ステップ
+  ====================== -->
+
+  <section class="card">
+
+    <div class="card-title">
+
+      <div class="card-icon">
+        ☷
+      </div>
+
+      おすすめ解説ステップ
+
+    </div>
+
+
+    <div
+      class="steps"
+      id="steps">
+
+      <div class="loading">
+        AIが学習ステップを考えています🐱💭
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================
+       重要ポイント
+  ====================== -->
+
+  <section class="card">
+
+    <div class="card-title">
+
+      <div class="card-icon">
+        🔑
+      </div>
+
+      3つの重要ポイント
+
+    </div>
+
+
+    <div id="points">
+
+      <div class="loading">
+        AIが重要ポイントを考えています🐱💭
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================
+       AI生徒チャット
+  ====================== -->
+
+  <section class="chat-card">
+
+
+    <div
+      class="messages"
+      id="messages">
+
+      <div class="loading">
+        子猫生徒を準備中にゃ🐱💭
+      </div>
+
+    </div>
+
+
+    <div class="chat-input-area">
+
+      <textarea
+        id="chatInput"
+        class="chat-input"
+        placeholder="子猫生徒にわかるように説明しよう…"
+        disabled></textarea>
+
+
+      <button
+        id="sendButton"
+        class="send-button"
+        onclick="sendMessage()"
+        disabled>
+
+        ➤
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+</main>
+
+
+
+<button class="chat-edit">
+  💬 チャットで編集
+</button>
+
+
+
+<script>
+
+/* =================================
+   ホームから受け取ったテーマ
+================================= */
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const topic =
+  params.get("topic") || "学習テーマ";
+
+
+
+document.getElementById(
+  "topicTitle"
+).textContent = topic;
+
+
+
+/* =================================
+   AIとの会話履歴
+================================= */
+
+let conversation = [];
+
+
+
+/* =================================
+   授業プラン生成
+================================= */
+
+async function loadPlan() {
+
+  try {
+
+    const response =
+      await fetch("/api/ask", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body: JSON.stringify({
+
+          mode: "plan",
+
+          topic: topic
+
+        })
+
+      });
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "学習プランの取得に失敗しました"
+      );
+
+    }
+
+
+    /* ステップ */
+
+    const steps =
+      document.getElementById(
+        "steps"
+      );
+
+    steps.innerHTML = "";
+
+
+    data.steps.forEach(
+      (text, index) => {
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+        div.className =
+          "step";
+
+
+        div.innerHTML = `
+          <span class="step-number">
+            ${index + 1}
+          </span>
+
+          <span>
+            ${escapeHtml(text)}
+          </span>
+        `;
+
+
+        steps.appendChild(div);
+
+      }
+    );
+
+
+
+    /* 重要ポイント */
+
+    const points =
+      document.getElementById(
+        "points"
+      );
+
+    points.innerHTML = "";
+
+
+    data.points.forEach(
+      text => {
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+        div.className =
+          "point";
+
+
+        div.textContent =
+          text;
+
+
+        points.appendChild(div);
+
+      }
+    );
+
+
+
+    /* 子猫生徒開始 */
+
+    await startStudent();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    document.getElementById(
+      "steps"
+    ).innerHTML =
+      `
+      <div class="loading">
+        学習プランを取得できませんでした🐱💦
+      </div>
+      `;
+
+
+    document.getElementById(
+      "points"
+    ).innerHTML =
+      `
+      <div class="loading">
+        AIとの接続を確認してください。
+      </div>
+      `;
+
+  }
+
+}
+
+
+
+/* =================================
+   子猫生徒を開始
+================================= */
+
+async function startStudent() {
+
+  const messages =
+    document.getElementById(
+      "messages"
+    );
+
+
+  messages.innerHTML = "";
+
+
+  addMessage(
+    `先生、${topic}って、まず何のことなのか教えてほしいにゃ？🐱`,
+    "assistant"
+  );
+
+
+  document.getElementById(
+    "chatInput"
+  ).disabled = false;
+
+
+  document.getElementById(
+    "sendButton"
+  ).disabled = false;
+
+}
+
+
+
+/* =================================
+   メッセージ表示
+================================= */
+
+function addMessage(
+  text,
+  type
+) {
+
+  const messages =
+    document.getElementById(
+      "messages"
+    );
+
+
+  const message =
+    document.createElement(
+      "div"
+    );
+
+
+  message.className =
+    "message " + type;
+
+
+  if (type === "assistant") {
+
+    message.innerHTML = `
+      <div class="cat">
+        🐱
+      </div>
+
+      <div class="bubble"></div>
+    `;
+
+  } else {
+
+    message.innerHTML = `
+      <div class="bubble"></div>
+    `;
+
+  }
+
+
+  message.querySelector(
+    ".bubble"
+  ).textContent = text;
+
+
+  messages.appendChild(
+    message
+  );
+
+
+  messages.scrollTop =
+    messages.scrollHeight;
+
+}
+
+
+
+/* =================================
+   AI生徒へ送信
+================================= */
+
+async function sendMessage() {
+
+  const input =
+    document.getElementById(
+      "chatInput"
+    );
+
+  const button =
+    document.getElementById(
+      "sendButton"
+    );
+
+
+  const text =
+    input.value.trim();
+
+
+  if (!text) return;
+
+
+  addMessage(
+    text,
+    "user"
+  );
+
+
+  conversation.push({
+
+    role: "user",
+
+    content: text
+
+  });
+
+
+  input.value = "";
+
+  button.disabled = true;
+
+
+  addMessage(
+    "うーん……考えてるにゃ🐱💭",
+    "assistant"
+  );
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/ask",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+
+            mode: "student",
+
+            topic: topic,
+
+            level:
+              "予備知識ゼロ",
+
+            explanation: text,
+
+            history:
+              conversation
+
+          })
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "AIとの通信に失敗しました"
+      );
+
+    }
+
+
+    const messages =
+      document.getElementById(
+        "messages"
+      );
+
+
+    const last =
+      messages.lastElementChild;
+
+
+    if (last) {
+      last.remove();
+    }
+
+
+    const answer =
+      data.reply ||
+      "……もう少し教えてほしいにゃ🐱";
+
+
+    addMessage(
+      answer,
+      "assistant"
+    );
+
+
+    conversation.push({
+
+      role: "assistant",
+
+      content: answer
+
+    });
+
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    const messages =
+      document.getElementById(
+        "messages"
+      );
+
+
+    const last =
+      messages.lastElementChild;
+
+
+    if (last) {
+      last.remove();
+    }
+
+
+    addMessage(
+      "ごめんにゃ……AIとつながらなかったみたい🐱💦",
+      "assistant"
+    );
+
+  }
+
+
+  button.disabled = false;
+
+  input.focus();
+
+}
+
+
+
+/* =================================
+   HTMLエスケープ
+================================= */
+
+function escapeHtml(text) {
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+
+}
+
+
+
+/* =================================
+   Enterで送信
+================================= */
+
+document
+  .getElementById(
+    "chatInput"
+  )
+  .addEventListener(
+    "keydown",
+    function(event) {
+
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey
+      ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+      }
+
+    }
+  );
+
+
+
+/* =================================
+   ページ読み込み時にAIへ
+================================= */
+
+loadPlan();
+
+</script>
+
+</body>
+</html>
