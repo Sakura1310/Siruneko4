@@ -23,7 +23,8 @@ export default async function handler(req, res) {
   }
 
   // 最新モデル名を定義
-  const MODEL_NAME = "gemini-3.8-flash";
+  const MODEL_NAME = "gemini-2.5-flash";
+
 
   try {
     const { mode, topic, level, explanation, history } = req.body;
