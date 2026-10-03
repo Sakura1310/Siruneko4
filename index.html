@@ -454,25 +454,20 @@
     }
 
 
-    function startLesson() {
+     function startLesson() {
 
-      const topic =
-        document.getElementById("topicInput").value.trim();
+  const topic =
+    document.getElementById("topicInput").value.trim();
 
-      if (!topic) {
-        alert("学びたいテーマを入力してね🐱");
-        return;
-      }
+  if (!topic) {
+    alert("学びたいテーマを入力してね🐱");
+    return;
+  }
 
-      /*
-       * ここは後でAI授業画面につなげます。
-       *
-       * 今は入力されたテーマを確認するだけ。
-       */
-      alert(
-        "「" + topic + "」の授業を開始します🐱✨"
-      );
-    }
+  window.location.href =
+    "lesson.html?topic=" +
+    encodeURIComponent(topic);
+}
 
 
     function editWithChat() {
