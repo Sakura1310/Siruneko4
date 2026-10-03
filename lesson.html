@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>みけねこ授業</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>みけねこ授業 - 授業中</title>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
@@ -24,22 +19,22 @@ body {
     BlinkMacSystemFont,
     "Noto Sans JP",
     sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* =====================
-   ヘッダー
-===================== */
-
+/* ヘッダー */
 .header {
-  height: 78px;
+  height: 70px;
   background: white;
   border-bottom: 1px solid #f1e8d8;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 10px 18px;
+  flex-shrink: 0;
 }
 
 .brand {
@@ -49,23 +44,14 @@ body {
 }
 
 .brand-icon {
-  width: 43px;
-  height: 43px;
-
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ffb52b,
-      #ff8d00
-    );
-
+  background: linear-gradient(135deg, #ffb52b, #ff8d00);
   display: flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 21px;
+  font-size: 20px;
 }
 
 .brand-name {
@@ -80,1081 +66,360 @@ body {
 
 .nav {
   display: flex;
-  gap: 4px;
+  gap: 5px;
 }
 
-.nav a {
+.nav-button {
   width: 37px;
   height: 37px;
-
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 13px;
-
   text-decoration: none;
-
   font-size: 18px;
   color: #666;
 }
 
-.nav a.active {
-  background: #fff1c8;
+.nav-button.active {
+  background: #fff1c9;
 }
 
-
-/* =====================
-   メイン
-===================== */
-
-.main {
-  max-width: 760px;
-  margin: auto;
-
-  padding: 38px 18px 110px;
+/* メインエリア */
+.main-container {
+  flex: 1;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  overflow: hidden;
 }
 
-.status {
-  color: #aaa;
-  font-size: 13px;
-
-  margin-bottom: 4px;
-}
-
-.title-row {
+/* テーマ表示用バー */
+.topic-bar {
+  background: #fff;
+  border: 1px solid #f0e6d2;
+  border-radius: 18px;
+  padding: 12px 18px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  gap: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  flex-shrink: 0;
 }
 
-.title {
-  margin: 0;
-
-  font-size: 30px;
-  font-weight: 900;
-}
-
-.operator {
-  border: 1px solid #f4df9e;
-
-  background: white;
-
-  color: #a66b14;
-
-  border-radius: 25px;
-
-  padding: 10px 13px;
-
-  font-size: 12px;
+.topic-label {
+  font-size: 11px;
   font-weight: 700;
-
-  white-space: nowrap;
+  color: #d97706;
+  background: #fff4d0;
+  padding: 3px 8px;
+  border-radius: 8px;
 }
 
-
-/* =====================
-   カード
-===================== */
-
-.card {
-  margin-top: 25px;
-
-  background: white;
-
-  border: 1px solid #eee9df;
-
-  border-radius: 24px;
-
-  padding: 22px;
-
-  box-shadow:
-    0 2px 8px rgba(0,0,0,0.04);
-}
-
-.card-title {
-  display: flex;
-  align-items: center;
-
-  gap: 11px;
-
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.card-icon {
-  width: 45px;
-  height: 45px;
-
-  border-radius: 13px;
-
-  background: #fff0c9;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #ed8700;
-
-  font-size: 21px;
-}
-
-
-/* =====================
-   学習ステップ
-===================== */
-
-.steps {
-  margin-top: 20px;
-}
-
-.step {
-  display: flex;
-  align-items: flex-start;
-
-  gap: 11px;
-
-  margin: 15px 0;
-
+.topic-title {
   font-size: 15px;
-
-  line-height: 1.6;
-}
-
-.step-number {
-  width: 27px;
-  height: 27px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: #fff8e6;
-
-  color: #df8b13;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-weight: 700;
-}
-
-
-/* =====================
-   重要ポイント
-===================== */
-
-.point {
-  display: flex;
-
-  gap: 10px;
-
-  margin: 17px 0;
-
-  font-size: 14px;
-
-  line-height: 1.8;
-}
-
-.point::before {
-  content: "●";
-
-  color: #f29a26;
-
-  flex-shrink: 0;
-}
-
-
-/* =====================
-   チャット
-===================== */
-
-.chat-card {
-  margin-top: 25px;
-
-  background: white;
-
-  border: 1px solid #eee9df;
-
-  border-radius: 25px;
-
+  font-weight: 800;
+  color: #222;
+  flex: 1;
+  margin-left: 10px;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  min-height: 520px;
-
+/* チャットログエリア */
+.chat-container {
+  flex: 1;
+  background: white;
+  border: 1px solid #eee9df;
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
 }
 
-.messages {
+.chat-logs {
   flex: 1;
-
-  padding: 20px 15px;
-
+  padding: 20px;
   overflow-y: auto;
-}
-
-.message {
   display: flex;
-
-  gap: 11px;
-
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.cat {
-  width: 45px;
-  height: 45px;
+.chat-msg {
+  display: flex;
+  gap: 10px;
+  max-width: 85%;
+}
 
-  flex-shrink: 0;
+.chat-msg.cat {
+  align-self: flex-start;
+}
 
+.chat-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ffb52b,
-      #ff8d00
-    );
-
+  background: linear-gradient(135deg, #ffb52b, #ff8d00);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
 
-  font-size: 22px;
+.chat-msg.user .avatar {
+  background: #e2e8f0;
 }
 
 .bubble {
-  max-width: 85%;
-
-  padding: 13px 15px;
-
+  padding: 12px 16px;
   border-radius: 18px;
-
-  background: #fffdf5;
-
-  border: 1px solid #f4e6bd;
-
   font-size: 14px;
-
-  line-height: 1.8;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-.message.user {
-  justify-content: flex-end;
+.chat-msg.cat .bubble {
+  background: #fffdf5;
+  border: 1px solid #f4e4bd;
+  color: #333;
 }
 
-.message.user .bubble {
+.chat-msg.user .bubble {
   background: #fff0ce;
-  border-color: #ffe0a0;
+  border: 1px solid #ffe0a0;
+  color: #222;
 }
 
-
-/* =====================
-   入力欄
-===================== */
-
+/* 入力エリア */
 .chat-input-area {
-  border-top: 1px solid #eee9df;
-
   padding: 12px;
-
+  background: #ffffff;
+  border-top: 1px solid #f2e9dc;
   display: flex;
-
-  gap: 10px;
-
-  align-items: center;
+  gap: 8px;
 }
 
 .chat-input {
   flex: 1;
-
-  min-width: 0;
-
-  height: 58px;
-
-  resize: none;
-
-  border: 1px solid #e8e8e8;
-
-  border-radius: 19px;
-
-  outline: none;
-
-  padding: 13px;
-
+  border: 1px solid #e8decb;
+  border-radius: 20px;
+  padding: 12px 18px;
   font-size: 14px;
-
+  outline: none;
   font-family: inherit;
 }
 
 .chat-input:focus {
-  border-color: #ffd681;
+  border-color: #ff9d00;
 }
 
-.send-button {
-  width: 55px;
-  height: 55px;
-
-  border: 0;
-
-  border-radius: 19px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ffe9ad,
-      #ffc987
-    );
-
+.send-btn {
+  background: linear-gradient(135deg, #ffa826, #ff7b00);
   color: white;
-
-  font-size: 21px;
-
+  border: none;
+  padding: 0 20px;
+  border-radius: 20px;
+  font-weight: 800;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-.send-button:disabled {
+.send-btn:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
 }
 
-
-/* =====================
-   読み込み
-===================== */
-
-.loading {
-  text-align: center;
-
-  padding: 35px 10px;
-
+.loading-indicator {
+  font-size: 12px;
   color: #aaa;
-
-  font-size: 14px;
+  font-style: italic;
 }
-
-
-/* =====================
-   チャット編集
-===================== */
-
-.chat-edit {
-  position: fixed;
-
-  right: 14px;
-  bottom: 14px;
-
-  border: 0;
-
-  border-radius: 18px;
-
-  padding: 13px 18px;
-
-  background: #111;
-
-  color: white;
-
-  font-size: 13px;
-
-  font-weight: 700;
-
-  box-shadow:
-    0 7px 25px rgba(0,0,0,0.18);
-}
-
 </style>
 </head>
 
-
 <body>
 
-
-<!-- =====================
-     ヘッダー
-===================== -->
-
+<!-- ヘッダー -->
 <header class="header">
-
   <div class="brand">
-
-    <div class="brand-icon">
-      🐾
-    </div>
-
+    <div class="brand-icon">🐾</div>
     <div>
-
-      <div class="brand-name">
-        みけねこ授業
-      </div>
-
-      <div class="brand-sub">
-        教えて学ぶ・ふりかえる
-      </div>
-
+      <div class="brand-name">みけねこ授業</div>
+      <div class="brand-sub">教えて学ぶ・ふりかえる</div>
     </div>
-
   </div>
-
 
   <nav class="nav">
-
-    <a href="lesson.html"
-       class="active">
-      🎓
-    </a>
-
-    <a href="memo.html">
-      📖
-    </a>
-
-    <a href="review.html">
-      📝
-    </a>
-
+    <a href="index.html" class="nav-button active">🎓</a>
+    <a href="memo.html" class="nav-button">📖</a>
+    <a href="review.html" class="nav-button">📝</a>
   </nav>
-
 </header>
 
+<div class="main-container">
 
-
-<main class="main">
-
-
-  <div class="status">
-    🐱 授業中
+  <!-- テーマ表示バー -->
+  <div class="topic-bar">
+    <span class="topic-label">学習テーマ</span>
+    <span class="topic-title" id="displayTopic">テーマを読み込み中...</span>
   </div>
 
-
-  <div class="title-row">
-
-    <h1
-      class="title"
-      id="topicTitle">
-      読み込み中…
-    </h1>
-
-    <button class="operator">
-      🐾 AIオペレーターに相談 ↗
-    </button>
-
-  </div>
-
-
-
-  <!-- =====================
-       学習ステップ
-  ====================== -->
-
-  <section class="card">
-
-    <div class="card-title">
-
-      <div class="card-icon">
-        ☷
-      </div>
-
-      おすすめ解説ステップ
-
+  <!-- チャットメインエリア -->
+  <div class="chat-container">
+    <div class="chat-logs" id="chatLogs">
+      <!-- メッセージがここに表示されます -->
     </div>
-
-
-    <div
-      class="steps"
-      id="steps">
-
-      <div class="loading">
-        AIが学習ステップを考えています🐱💭
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- =====================
-       重要ポイント
-  ====================== -->
-
-  <section class="card">
-
-    <div class="card-title">
-
-      <div class="card-icon">
-        🔑
-      </div>
-
-      3つの重要ポイント
-
-    </div>
-
-
-    <div id="points">
-
-      <div class="loading">
-        AIが重要ポイントを考えています🐱💭
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- =====================
-       AI生徒チャット
-  ====================== -->
-
-  <section class="chat-card">
-
-
-    <div
-      class="messages"
-      id="messages">
-
-      <div class="loading">
-        子猫生徒を準備中にゃ🐱💭
-      </div>
-
-    </div>
-
 
     <div class="chat-input-area">
-
-      <textarea
-        id="chatInput"
-        class="chat-input"
-        placeholder="子猫生徒にわかるように説明しよう…"
-        disabled></textarea>
-
-
-      <button
-        id="sendButton"
-        class="send-button"
-        onclick="sendMessage()"
-        disabled>
-
-        ➤
-
-      </button>
-
+      <input type="text" class="chat-input" id="userInput" placeholder="みけねこ生徒に教えてあげよう..." onkeypress="handleKeyPress(event)">
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">送信 🐾</button>
     </div>
+  </div>
 
-  </section>
-
-
-</main>
-
-
-
-<button class="chat-edit">
-  💬 チャットで編集
-</button>
-
-
+</div>
 
 <script>
-
-/* =================================
-   ホームから受け取ったテーマ
-================================= */
-
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
-
-const topic =
-  params.get("topic") || "学習テーマ";
-
-
-
-document.getElementById(
-  "topicTitle"
-).textContent = topic;
-
-
-
-/* =================================
-   AIとの会話履歴
-================================= */
-
-let conversation = [];
-
-
-
-/* =================================
-   授業プラン生成
-================================= */
-
-async function loadPlan() {
-
-  try {
-
-    const response =
-      await fetch("/api/ask", {
-
-        method: "POST",
-
-        headers: {
-          "Content-Type":
-            "application/json"
-        },
-
-        body: JSON.stringify({
-
-          mode: "plan",
-
-          topic: topic
-
-        })
-
-      });
-
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "学習プランの取得に失敗しました"
-      );
-
-    }
-
-
-    /* ステップ */
-
-    const steps =
-      document.getElementById(
-        "steps"
-      );
-
-    steps.innerHTML = "";
-
-
-    data.steps.forEach(
-      (text, index) => {
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-        div.className =
-          "step";
-
-
-        div.innerHTML = `
-          <span class="step-number">
-            ${index + 1}
-          </span>
-
-          <span>
-            ${escapeHtml(text)}
-          </span>
-        `;
-
-
-        steps.appendChild(div);
-
-      }
-    );
-
-
-
-    /* 重要ポイント */
-
-    const points =
-      document.getElementById(
-        "points"
-      );
-
-    points.innerHTML = "";
-
-
-    data.points.forEach(
-      text => {
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-        div.className =
-          "point";
-
-
-        div.textContent =
-          text;
-
-
-        points.appendChild(div);
-
-      }
-    );
-
-
-
-    /* 子猫生徒開始 */
-
-    await startStudent();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    document.getElementById(
-      "steps"
-    ).innerHTML =
-      `
-      <div class="loading">
-        学習プランを取得できませんでした🐱💦
-      </div>
-      `;
-
-
-    document.getElementById(
-      "points"
-    ).innerHTML =
-      `
-      <div class="loading">
-        AIとの接続を確認してください。
-      </div>
-      `;
-
-  }
-
+let currentTopic = "";
+let chatHistory = [];
+
+// 初期化（ページロード時）
+async function initLesson() {
+  const urlParams = new URLSearchParams(window.location.search);
+  currentTopic = urlParams.get('topic') || "光合成の仕組み";
+
+  document.getElementById("displayTopic").textContent = currentTopic;
+
+  // AI生徒からの最初の挨拶メッセージ
+  const welcomeText = `先生！今日から「${currentTopic}」について教えてくれるんだにゃ？よろしくね！まず何から教えてくれるかにゃ？🐱`;
+  
+  appendMessage("assistant", welcomeText);
+  chatHistory.push({ role: "assistant", content: welcomeText });
 }
 
+// 画面にメッセージを追加
+function appendMessage(role, text) {
+  const logs = document.getElementById("chatLogs");
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `chat-msg ${role === 'assistant' ? 'cat' : 'user'}`;
 
+  const avatar = role === 'assistant' ? '<div class="avatar">🐱</div>' : '<div class="avatar">👤</div>';
 
-/* =================================
-   子猫生徒を開始
-================================= */
+  msgDiv.innerHTML = `
+    ${avatar}
+    <div class="bubble">${escapeHtml(text)}</div>
+  `;
 
-async function startStudent() {
-
-  const messages =
-    document.getElementById(
-      "messages"
-    );
-
-
-  messages.innerHTML = "";
-
-
-  addMessage(
-    `先生、${topic}って、まず何のことなのか教えてほしいにゃ？🐱`,
-    "assistant"
-  );
-
-
-  document.getElementById(
-    "chatInput"
-  ).disabled = false;
-
-
-  document.getElementById(
-    "sendButton"
-  ).disabled = false;
-
+  logs.appendChild(msgDiv);
+  logs.scrollTop = logs.scrollHeight;
 }
 
-
-
-/* =================================
-   メッセージ表示
-================================= */
-
-function addMessage(
-  text,
-  type
-) {
-
-  const messages =
-    document.getElementById(
-      "messages"
-    );
-
-
-  const message =
-    document.createElement(
-      "div"
-    );
-
-
-  message.className =
-    "message " + type;
-
-
-  if (type === "assistant") {
-
-    message.innerHTML = `
-      <div class="cat">
-        🐱
-      </div>
-
-      <div class="bubble"></div>
-    `;
-
-  } else {
-
-    message.innerHTML = `
-      <div class="bubble"></div>
-    `;
-
-  }
-
-
-  message.querySelector(
-    ".bubble"
-  ).textContent = text;
-
-
-  messages.appendChild(
-    message
-  );
-
-
-  messages.scrollTop =
-    messages.scrollHeight;
-
-}
-
-
-
-/* =================================
-   AI生徒へ送信
-================================= */
-
+// メッセージ送信
 async function sendMessage() {
-
-  const input =
-    document.getElementById(
-      "chatInput"
-    );
-
-  const button =
-    document.getElementById(
-      "sendButton"
-    );
-
-
-  const text =
-    input.value.trim();
-
+  const input = document.getElementById("userInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const text = input.value.trim();
 
   if (!text) return;
 
-
-  addMessage(
-    text,
-    "user"
-  );
-
-
-  conversation.push({
-
-    role: "user",
-
-    content: text
-
-  });
-
-
+  // ユーザーメッセージの表示
+  appendMessage("user", text);
+  chatHistory.push({ role: "user", content: text });
   input.value = "";
 
-  button.disabled = true;
-
-
-  addMessage(
-    "うーん……考えてるにゃ🐱💭",
-    "assistant"
-  );
-
+  // ボタン非活性化
+  input.disabled = true;
+  sendBtn.disabled = true;
 
   try {
-
-    const response =
-      await fetch(
-        "/api/ask",
-        {
-
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-
-            mode: "student",
-
-            topic: topic,
-
-            level:
-              "予備知識ゼロ",
-
-            explanation: text,
-
-            history:
-              conversation
-
-          })
-
-        }
-      );
-
-
-    const data =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "AIとの通信に失敗しました"
-      );
-
-    }
-
-
-    const messages =
-      document.getElementById(
-        "messages"
-      );
-
-
-    const last =
-      messages.lastElementChild;
-
-
-    if (last) {
-      last.remove();
-    }
-
-
-    const answer =
-      data.reply ||
-      "……もう少し教えてほしいにゃ🐱";
-
-
-    addMessage(
-      answer,
-      "assistant"
-    );
-
-
-    conversation.push({
-
-      role: "assistant",
-
-      content: answer
-
+    const res = await fetch("/api/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode: "student",
+        topic: currentTopic,
+        explanation: text,
+        history: chatHistory
+      })
     });
 
+    const data = await res.json();
 
-  } catch (error) {
+    if (data.reply) {
+      appendMessage("assistant", data.reply);
+      chatHistory.push({ role: "assistant", content: data.reply });
 
-    console.error(error);
-
-
-    const messages =
-      document.getElementById(
-        "messages"
-      );
-
-
-    const last =
-      messages.lastElementChild;
-
-
-    if (last) {
-      last.remove();
+      // 会話履歴を自動で保存（memo.html の学習レポート用）
+      saveToReportHistory();
+    } else {
+      appendMessage("assistant", "うーん……ちょっとうまく聞き取れなかったにゃ🐱 もう一度教えてほしいにゃ！");
     }
 
+  } catch (err) {
+    console.error("エラー:", err);
+    appendMessage("assistant", "ごめんにゃ、通信がうまくつながらなかったにゃ💦 もう一度送信してみてね！");
+  } finally {
+    input.disabled = false;
+    sendBtn.disabled = false;
+    input.focus();
+  }
+}
 
-    addMessage(
-      "ごめんにゃ……AIとつながらなかったみたい🐱💦",
-      "assistant"
-    );
+// エンキー送信対応
+function handleKeyPress(e) {
+  if (e.key === "Enter") {
+    sendMessage();
+  }
+}
 
+// memo.html（学習レポート）用に自動保存する処理
+function saveToReportHistory() {
+  let memos = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
+  
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  // 既存の同テーマレポートがあれば更新、なければ新規追加
+  const existingIndex = memos.findIndex(m => m.topic === currentTopic);
+  
+  const reportData = {
+    id: existingIndex >= 0 ? memos[existingIndex].id : Date.now(),
+    topic: currentTopic,
+    date: dateStr,
+    status: "進行中",
+    history: chatHistory
+  };
+
+  if (existingIndex >= 0) {
+    memos[existingIndex] = reportData;
+  } else {
+    memos.push(reportData);
   }
 
-
-  button.disabled = false;
-
-  input.focus();
-
+  localStorage.setItem("mikeneko_memos", JSON.stringify(memos));
 }
-
-
-
-/* =================================
-   HTMLエスケープ
-================================= */
 
 function escapeHtml(text) {
-
-  const div =
-    document.createElement(
-      "div"
-    );
-
-  div.textContent =
-    text;
-
+  const div = document.createElement("div");
+  div.textContent = text;
   return div.innerHTML;
-
 }
 
-
-
-/* =================================
-   Enterで送信
-================================= */
-
-document
-  .getElementById(
-    "chatInput"
-  )
-  .addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key === "Enter" &&
-        !event.shiftKey
-      ) {
-
-        event.preventDefault();
-
-        sendMessage();
-
-      }
-
-    }
-  );
-
-
-
-/* =================================
-   ページ読み込み時にAIへ
-================================= */
-
-loadPlan();
-
+// 起動処理
+initLesson();
 </script>
 
 </body>
