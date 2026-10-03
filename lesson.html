@@ -85,7 +85,7 @@ body {
   background: #fff1c9;
 }
 
-/* メインエリア */
+/* メインエリア（下部に約2cmの余白を追加して全体を上に浮かせています） */
 .main-container {
   flex: 1;
   max-width: 800px;
@@ -93,7 +93,7 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 16px 16px 36px 16px; /* ← 下の余白を広げて持ち上げました */
   overflow: hidden;
 }
 
@@ -204,9 +204,9 @@ body {
   color: #222;
 }
 
-/* 入力エリア */
+/* 入力エリア（押しやすいようにパディングも微調整） */
 .chat-input-area {
-  padding: 12px;
+  padding: 14px 16px;
   background: #ffffff;
   border-top: 1px solid #f2e9dc;
   display: flex;
@@ -243,10 +243,11 @@ body {
   cursor: not-allowed;
 }
 
-.loading-indicator {
-  font-size: 12px;
-  color: #aaa;
-  font-style: italic;
+/* スマホ用レイアウト微調整 */
+@media (max-width: 600px) {
+  .main-container {
+    padding: 12px 12px 40px 12px; /* スマホでは下部余白をやや多めの40pxに設定 */
+  }
 }
 </style>
 </head>
@@ -392,7 +393,6 @@ function saveToReportHistory() {
   const now = new Date();
   const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-  // 既存の同テーマレポートがあれば更新、なければ新規追加
   const existingIndex = memos.findIndex(m => m.topic === currentTopic);
   
   const reportData = {
