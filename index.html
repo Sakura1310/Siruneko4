@@ -82,6 +82,10 @@
       background: transparent;
       font-size: 21px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
     }
 
     .nav-button.active {
@@ -185,6 +189,10 @@
       white-space: nowrap;
 
       transition: transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
     }
 
     .start-button:active {
@@ -352,12 +360,9 @@
     </div>
 
     <nav class="nav">
-       <a href="lesson.html" class="nav-button active">🎓</a>
-      
-        <a href="memo.html" class="nav-button">📖</a>
-      
-         <a href="review.html" class="nav-button">📝</a>
-      
+      <a href="index.html" class="nav-button active">🎓</a>
+      <a href="memo.html" class="nav-button">📖</a>
+      <a href="review.html" class="nav-button">📝</a>
     </nav>
 
   </header>
@@ -393,19 +398,11 @@
         placeholder="例: 光合成の仕組み"
       >
 
-      <a
-  href="lesson.html"
-  class="start-button"
-        .start-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
->
-  授業開始
-  <span>→</span>
-</a>
+      <!-- ボタン部分を onclick="startLesson()" に修正 -->
+      <button type="button" class="start-button" onclick="startLesson()">
+        授業開始
+        <span>→</span>
+      </button>
 
     </div>
 
@@ -454,20 +451,18 @@
     }
 
 
-     function startLesson() {
+    function startLesson() {
+      const topic = document.getElementById("topicInput").value.trim();
 
-  const topic =
-    document.getElementById("topicInput").value.trim();
+      if (!topic) {
+        alert("学びたいテーマを入力してね🐱");
+        return;
+      }
 
-  if (!topic) {
-    alert("学びたいテーマを入力してね🐱");
-    return;
-  }
-
-  window.location.href =
-    "lesson.html?topic=" +
-    encodeURIComponent(topic);
-}
+      window.location.href =
+        "lesson.html?topic=" +
+        encodeURIComponent(topic);
+    }
 
 
     function editWithChat() {
