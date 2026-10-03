@@ -1,1 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>みけねこ授業 - 学習レポート</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fffdf9;
+  color: #333;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Noto Sans JP",
+    sans-serif;
+}
+
+/* =====================
+   ヘッダー
+===================== */
+
+.header {
+  height: 78px;
+  background: white;
+  border-bottom: 1px solid #f1e8d8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffb52b, #ff8d00);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.brand-sub {
+  color: #999;
+  font-size: 9px;
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav a {
+  width: 37px;
+  height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #666;
+}
+
+.nav a.active {
+  background: #fff1c8;
+}
+
+/* =====================
+   メインコンテンツ
+===================== */
+
+.main {
+  max-width: 760px;
+  margin: auto;
+  padding: 30px 18px 110px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 900;
+  color: #333;
+  margin-bottom: 22px;
+}
+
+.count-badge {
+  color: #aaa;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* =====================
+   アコーディオンカード
+===================== */
+
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.report-card {
+  background: white;
+  border: 1px solid #eee9df;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+}
+
+/* クリックするヘッダー部分 */
+.card-header {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-header:hover {
+  background-color: #faf8f3;
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.clock-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #fff0c9;
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-topic {
+  font-size: 16px;
+  font-weight: 800;
+  color: #222;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #999;
+}
+
+.status-tag {
+  background: #fff3c4;
+  color: #a66b14;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.status-tag.completed {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+/* 開閉矢印 */
+.arrow-icon {
+  font-size: 14px;
+  color: #aaa;
+  transition: transform 0.3s ease;
+  padding: 4px;
+}
+
+/* 開いた状態の矢印回転 */
+.report-card.active .arrow-icon {
+  transform: rotate(180deg);
+}
+
+/* =====================
+   開く部分（アコーディオンボディ）
+===================== */
+
+.card-body {
+  display: none;
+  padding: 0 20px 20px 20px;
+  border-top: 1px dashed #f0e7d8;
+  background: #fffdfa;
+}
+
+.report-card.active .card-body {
+  display: block;
+}
+
+.body-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #888;
+  margin: 16px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 会話ログ表示 */
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.log-msg {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.log-msg.cat {
+  align-items: flex-start;
+}
+
+.log-msg.user {
+  justify-content: flex-end;
+}
+
+.cat-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffb52b, #ff8d00);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.log-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #f2e4c4;
+}
+
+.log-msg.user .log-bubble {
+  background: #fff0ce;
+  border-color: #ffe0a0;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.action-btn {
+  border: 1px solid #e8e2d5;
+  background: white;
+  color: #666;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.action-btn:hover {
+  background: #fdf8ed;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ヘッダー -->
+<header class="header">
+  <div class="brand">
+    <div class="brand-icon">🐾</div>
+    <div>
+      <div class="brand-name">みけねこ授業</div>
+      <div class="brand-sub">教えて学ぶ・ふりかえる</div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a href="lesson.html">🎓</a>
+    <a href="memo.html" class="active">📖</a>
+    <a href="review.html">📝</a>
+  </nav>
+</header>
+
+<!-- メイン -->
+<main class="main">
+
+  <div class="page-title">
+    📖 学習レポート <span class="count-badge" id="reportCount">(0)</span>
+  </div>
+
+  <div class="report-list" id="reportList">
+    <!-- JSでレポートカードがここに挿入されます -->
+  </div>
+
+</main>
+
+<script>
+// サンプルデータ（保存データがない場合に画像と同じ項目を表示）
+const defaultMemos = [
+  {
+    id: 1,
+    topic: "簿記",
+    date: "2026/10/03 14:06",
+    status: "進行中",
+    history: [
+      { role: "assistant", content: "先生、簿記って、まず何のことなのか教えてほしいにゃ？🐱" },
+      { role: "user", content: "簿記は会社のお金の出し入れを記録するノートのことだよ！" },
+      { role: "assistant", content: "なるほど！お金の記録ノートなんだにゃ！じゃあ、なんでノートをつける必要があるのかにゃ？🐱" }
+    ]
+  },
+  {
+    id: 2,
+    topic: "簿記について",
+    date: "2026/10/03 13:42",
+    status: "進行中",
+    history: [
+      { role: "assistant", content: "先生、簿記について教えてほしいにゃ！🐱" },
+      { role: "user", content: "資産とか負債とか、ルールが決まってるんだよ。" },
+      { role: "assistant", content: "しさん？ふさい？難しそうな言葉だにゃ……詳しく教えてほしいにゃ🐱" }
+    ]
+  }
+];
+
+// 初期化と描画
+function loadReports() {
+  const container = document.getElementById("reportList");
+  const countBadge = document.getElementById("reportCount");
+
+  // localStorageから保存データを取得。なければサンプルを表示
+  let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "null");
+  if (!savedData || savedData.length === 0) {
+    savedData = defaultMemos;
+  }
+
+  countBadge.textContent = `(${savedData.length})`;
+  container.innerHTML = "";
+
+  savedData.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "report-card";
+
+    // チャット会話ログの生成
+    const historyHtml = (item.history || []).map(msg => {
+      if (msg.role === "assistant") {
+        return `
+          <div class="log-msg cat">
+            <div class="cat-avatar">🐱</div>
+            <div class="log-bubble">${escapeHtml(msg.content)}</div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="log-msg user">
+            <div class="log-bubble">${escapeHtml(msg.content)}</div>
+          </div>
+        `;
+      }
+    }).join("");
+
+    const isCompleted = item.status === "完了";
+    const statusClass = isCompleted ? "status-tag completed" : "status-tag";
+
+    card.innerHTML = `
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-left">
+          <div class="clock-icon">🕒</div>
+          <div class="card-info">
+            <div class="card-topic">${escapeHtml(item.topic || "無題のテーマ")}</div>
+            <div class="card-meta">
+              <span>📅 ${item.date || "2026/10/03 00:00"}</span>
+              <span class="${statusClass}">${item.status || "進行中"}</span>
+            </div>
+          </div>
+        </div>
+        <div class="arrow-icon">∨</div>
+      </div>
+
+      <div class="card-body">
+        <div class="body-section-title">💬 会話記録</div>
+        <div class="chat-log">
+          ${historyHtml || '<div style="color:#aaa; font-size:12px;">記録された会話はありません</div>'}
+        </div>
+
+        <div class="card-actions">
+          <button class="action-btn" onclick="copyReport(event, ${index})">📋 会話をコピー</button>
+          <button class="action-btn" onclick="deleteReport(event, ${index})">🗑 削除</button>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// カードの開閉（アコーディオン）処理
+function toggleCard(headerElem) {
+  const card = headerElem.parentElement;
+  card.classList.toggle("active");
+}
+
+// 削除機能
+function deleteReport(event, index) {
+  event.stopPropagation(); // アコーディオンの開閉イベントを止める
+  if (confirm("この学習レポートを削除しますか？")) {
+    let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "null") || defaultMemos;
+    savedData.splice(index, 1);
+    localStorage.setItem("mikeneko_memos", JSON.stringify(savedData));
+    loadReports();
+  }
+}
+
+// コピー機能
+function copyReport(event, index) {
+  event.stopPropagation();
+  let savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "null") || defaultMemos;
+  const item = savedData[index];
+  
+  const text = `【学習レポート】${item.topic} (${item.date})\n\n` + 
+    (item.history || []).map(m => `${m.role === 'assistant' ? '🐱' : '👤'}: ${m.content}`).join("\n");
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert("会話記録をコピーしました！");
+  });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// 起動時に読み込み
+loadReports();
+</script>
+
+</body>
+</html>
 
