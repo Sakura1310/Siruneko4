@@ -1,4 +1,4 @@
-// 【エラー原因を隠さず詳細ログとして返却する処理】
+// 【① エラー発生時に自動で稼働中の控えモデルへ切り替える通信関数】
 async function fetchWithFallback(models, apiKey, payload) {
   let lastDetails = [];
 
@@ -13,11 +13,10 @@ async function fetchWithFallback(models, apiKey, payload) {
 
       const data = await response.json().catch(() => ({}));
 
-      if (response.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        return { ok: true, text: data.candidates[0].content.parts[0].text };
+      if (response.ok && data.candidates?.[0]) {
+        return { ok: true, data: data, model: modelName };
       }
 
-      // エラーの詳細メッセージを記録
       const errMsg = data.error?.message || `HTTP ${response.status}`;
       console.warn(`モデル ${modelName} 失敗: ${errMsg}`);
       lastDetails.push(`[${modelName}]: ${errMsg}`);
@@ -40,7 +39,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY がVercelに設定されていません。" });
   }
 
-  // 試行するモデル候補
   const MODELS = [
     "gemini-2.5-flash",
     "gemini-2.0-flash",
@@ -56,7 +54,7 @@ export default async function handler(req, res) {
         parts: [{ text: item.content }]
       }));
 
-      // 先頭が model の場合は取り除く
+      // 先頭が model の場合は取り除く（Geminiのルール対策）
       while (formattedHistory.length > 0 && formattedHistory[0].role === "model") {
         formattedHistory.shift();
       }
@@ -78,9 +76,21 @@ export default async function handler(req, res) {
       });
 
       if (result.ok) {
-        return res.status(200).json({ reply: result.text });
+        // candidates の parts 配列の中から 'text' を持っている要素を確実に抽出
+        const parts = result.data.candidates?.[0]?.content?.parts || [];
+        const replyPart = parts.find(p => p.text && typeof p.text === 'string');
+        const replyText = replyPart ? replyPart.text : null;
+
+        if (replyText) {
+          return res.status(200).json({ reply: replyText });
+        } else {
+          // テキストが見つからない場合は生のデータ構造を出力
+          console.error("テキスト抽出失敗:", JSON.stringify(result.data));
+          return res.status(500).json({ 
+            error: `AI応答解析エラー (モデル: ${result.model}): ${JSON.stringify(result.data.candidates?.[0] || result.data)}` 
+          });
+        }
       } else {
-        // エラー詳細をそのままフロントに返す
         return res.status(500).json({ error: result.errorDetail });
       }
     }
