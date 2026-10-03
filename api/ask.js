@@ -1,4 +1,4 @@
-// 【① 503混雑時にモデルを変えて自動再試行する通信関数】
+// 【① 503混雑や404エラー時にモデルを変えて自動再試行する通信関数】
 async function fetchWithFallback(models, apiKey, payload) {
   let lastError = null;
 
@@ -11,9 +11,9 @@ async function fetchWithFallback(models, apiKey, payload) {
         body: JSON.stringify(payload)
       });
 
-      // 503（混雑中）の場合は次のモデルへ切り替えて試す
-      if (response.status === 503) {
-        console.warn(`モデル ${modelName} が混雑中のため、別のモデルへ切り替えます...`);
+      // 503（混雑中）や404（モデル廃止/非対応）の場合は次のモデルへ切り替えて試す
+      if (response.status === 503 || response.status === 404) {
+        console.warn(`モデル ${modelName} でステータス ${response.status} が発生したため、控えモデルへ切り替えます...`);
         continue;
       }
 
@@ -23,8 +23,7 @@ async function fetchWithFallback(models, apiKey, payload) {
     }
   }
 
-  // すべてのモデルで失敗した場合は最後のエラーを投げる
-  throw lastError || new Error("すべてのモデルが混雑しています。");
+  throw lastError || new Error("利用可能なモデルで応答を取得できませんでした。");
 }
 
 export default async function handler(req, res) {
@@ -37,8 +36,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY が設定されていません。" });
   }
 
-  // 優先順位をつけたモデル一覧（メインが混雑していたら控えへ移動）
-  const MODELS = ["gemini-2.5-flash", "gemini-1.5-flash-latest"];
+  // 最新モデル（3.8）をメインにし、控えに長期安定版（1.5-latest）を配置
+  const MODELS = ["gemini-3.8-flash", "gemini-1.5-flash-latest"];
 
   try {
     const { mode, topic, level, explanation, history } = req.body;
@@ -148,6 +147,51 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         reply: replyText || "うーん……もう少し教えてほしいにゃ🐱"
+      });
+    }
+
+    /* =====================================
+       ③ 会話の自動要約 (mode === "summarize")
+    ===================================== */
+    if (mode === "summarize") {
+      const prompt = `あなたは学習アプリ「しるねこ」の要約AIです。
+以下の「${topic}」に関する授業の会話履歴を読み、ユーザーが学んだ要点と子猫生徒の成長をわかりやすくまとめてください。
+
+会話履歴：
+${JSON.stringify(history || [])}
+
+必ず以下のJSON形式のみで出力してください：
+{
+  "summary": "今回の授業で学んだ内容のわかりやすい要約（2〜3文）",
+  "keyTakeaways": [
+    "学んだ重要ポイント1",
+    "学んだ重要ポイント2",
+    "学んだ重要ポイント3"
+  ],
+  "catComment": "子猫生徒からの感謝と感想メッセージ（語尾は「にゃ」）"
+}`;
+
+      const response = await fetchWithFallback(MODELS, apiKey, {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: "application/json" }
+      });
+
+      const geminiData = await response.json();
+
+      if (!response.ok) {
+        console.error("Gemini API Error:", geminiData);
+        return res.status(500).json({
+          error: geminiData.error?.message || "Gemini APIとの通信に失敗しました。"
+        });
+      }
+
+      const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+      const result = JSON.parse(rawText);
+
+      return res.status(200).json({
+        summary: result.summary || "授業の要約を作成しました。",
+        keyTakeaways: result.keyTakeaways || [],
+        catComment: result.catComment || "先生、教えてくれてありがとうにゃ！"
       });
     }
 
