@@ -6,254 +6,90 @@
 <title>みけねこ授業 - 授業中</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 body {
-  margin: 0;
-  background: #fffdf9;
-  color: #333;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Noto Sans JP",
-    sans-serif;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  margin: 0; background: #fffdf9; color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
+  display: flex; flex-direction: column; height: 100vh; overflow: hidden;
 }
-
-/* ヘッダー */
 .header {
-  height: 70px;
-  background: white;
-  border-bottom: 1px solid #f1e8d8;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 18px;
-  flex-shrink: 0;
+  height: 70px; background: white; border-bottom: 1px solid #f1e8d8;
+  display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; flex-shrink: 0;
 }
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
+.brand { display: flex; align-items: center; gap: 10px; }
 .brand-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%;
   background: linear-gradient(135deg, #ffb52b, #ff8d00);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
 }
-
-.brand-name {
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.brand-sub {
-  color: #999;
-  font-size: 9px;
-}
-
-.nav {
-  display: flex;
-  gap: 5px;
-}
-
+.brand-name { font-size: 16px; font-weight: 800; }
+.brand-sub { color: #999; font-size: 9px; }
+.nav { display: flex; gap: 5px; }
 .nav-button {
-  width: 37px;
-  height: 37px;
-  border-radius: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-size: 18px;
-  color: #666;
+  width: 37px; height: 37px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; font-size: 18px; color: #666;
 }
-
-.nav-button.active {
-  background: #fff1c9;
-}
-
-/* メインエリア */
+.nav-button.active { background: #fff1c9; }
 .main-container {
-  flex: 1;
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  padding: 16px 16px 36px 16px;
-  overflow: hidden;
+  flex: 1; max-width: 800px; width: 100%; margin: 0 auto;
+  display: flex; flex-direction: column; padding: 16px 16px 36px 16px; overflow: hidden;
 }
-
-/* テーマ表示バー */
 .topic-bar {
-  background: #fff;
-  border: 1px solid #f0e6d2;
-  border-radius: 18px;
-  padding: 12px 18px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-  flex-shrink: 0;
+  background: #fff; border: 1px solid #f0e6d2; border-radius: 18px;
+  padding: 12px 18px; margin-bottom: 12px; display: flex; align-items: center;
+  justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.02); flex-shrink: 0;
 }
-
 .topic-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #d97706;
-  background: #fff4d0;
-  padding: 3px 8px;
-  border-radius: 8px;
+  font-size: 11px; font-weight: 700; color: #d97706; background: #fff4d0;
+  padding: 3px 8px; border-radius: 8px;
 }
-
 .topic-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: #222;
-  flex: 1;
-  margin-left: 10px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 15px; font-weight: 800; color: #222; flex: 1; margin-left: 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
-/* チャットログエリア */
 .chat-container {
-  flex: 1;
-  background: white;
-  border: 1px solid #eee9df;
-  border-radius: 24px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  flex: 1; background: white; border: 1px solid #eee9df; border-radius: 24px;
+  display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.03);
 }
-
 .chat-logs {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;
 }
-
-.chat-msg {
-  display: flex;
-  gap: 10px;
-  max-width: 85%;
-}
-
-.chat-msg.cat {
-  align-self: flex-start;
-}
-
-.chat-msg.user {
-  align-self: flex-end;
-  flex-direction: row-reverse;
-}
-
+.chat-msg { display: flex; gap: 10px; max-width: 85%; }
+.chat-msg.cat { align-self: flex-start; }
+.chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
 .avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 36px; height: 36px; border-radius: 50%;
   background: linear-gradient(135deg, #ffb52b, #ff8d00);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
 }
-
-.chat-msg.user .avatar {
-  background: #e2e8f0;
-}
-
+.chat-msg.user .avatar { background: #e2e8f0; }
 .bubble {
-  padding: 12px 16px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-break: break-word;
+  padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word;
 }
-
-.chat-msg.cat .bubble {
-  background: #fffdf5;
-  border: 1px solid #f4e4bd;
-  color: #333;
-}
-
-.chat-msg.user .bubble {
-  background: #fff0ce;
-  border: 1px solid #ffe0a0;
-  color: #222;
-}
-
-/* 入力エリア */
+.chat-msg.cat .bubble { background: #fffdf5; border: 1px solid #f4e4bd; color: #333; }
+.chat-msg.user .bubble { background: #fff0ce; border: 1px solid #ffe0a0; color: #222; }
+.chat-msg.error .bubble { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; font-weight: bold; }
 .chat-input-area {
-  padding: 14px 16px;
-  background: #ffffff;
-  border-top: 1px solid #f2e9dc;
-  display: flex;
-  gap: 8px;
+  padding: 14px 16px; background: #ffffff; border-top: 1px solid #f2e9dc; display: flex; gap: 8px;
 }
-
 .chat-input {
-  flex: 1;
-  border: 1px solid #e8decb;
-  border-radius: 20px;
-  padding: 12px 18px;
-  font-size: 14px;
-  outline: none;
-  font-family: inherit;
+  flex: 1; border: 1px solid #e8decb; border-radius: 20px; padding: 12px 18px;
+  font-size: 14px; outline: none; font-family: inherit;
 }
-
-.chat-input:focus {
-  border-color: #ff9d00;
-}
-
+.chat-input:focus { border-color: #ff9d00; }
 .send-btn {
-  background: linear-gradient(135deg, #ffa826, #ff7b00);
-  color: white;
-  border: none;
-  padding: 0 20px;
-  border-radius: 20px;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
+  background: linear-gradient(135deg, #ffa826, #ff7b00); color: white; border: none;
+  padding: 0 20px; border-radius: 20px; font-weight: 800; cursor: pointer; white-space: nowrap;
 }
-
-.send-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@media (max-width: 600px) {
-  .main-container {
-    padding: 12px 12px 40px 12px;
-  }
-}
+.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+@media (max-width: 600px) { .main-container { padding: 12px 12px 40px 12px; } }
 </style>
 </head>
 
 <body>
 
-<!-- ヘッダー -->
 <header class="header">
   <div class="brand">
     <div class="brand-icon">🐾</div>
@@ -262,7 +98,6 @@ body {
       <div class="brand-sub">教えて学ぶ・ふりかえる</div>
     </div>
   </div>
-
   <nav class="nav">
     <a href="index.html" class="nav-button active">🎓</a>
     <a href="memo.html" class="nav-button">📖</a>
@@ -271,50 +106,40 @@ body {
 </header>
 
 <div class="main-container">
-
-  <!-- テーマ表示バー -->
   <div class="topic-bar">
     <span class="topic-label">学習テーマ</span>
     <span class="topic-title" id="displayTopic">テーマを読み込み中...</span>
   </div>
 
-  <!-- チャットメインエリア -->
   <div class="chat-container">
-    <div class="chat-logs" id="chatLogs">
-      <!-- メッセージ表示エリア -->
-    </div>
+    <div class="chat-logs" id="chatLogs"></div>
 
     <div class="chat-input-area">
       <input type="text" class="chat-input" id="userInput" placeholder="みけねこ生徒に教えてあげよう..." onkeypress="handleKeyPress(event)">
       <button class="send-btn" id="sendBtn" onclick="sendMessage()">送信 🐾</button>
     </div>
   </div>
-
 </div>
 
 <script>
 let currentTopic = "";
 let chatHistory = [];
 
-// 初期化（ページロード時）
 function initLesson() {
   const urlParams = new URLSearchParams(window.location.search);
-  currentTopic = urlParams.get('topic') || "光合成の仕組み";
+  currentTopic = urlParams.get('topic') || "簿記";
 
   document.getElementById("displayTopic").textContent = currentTopic;
+  chatHistory = [];
 
-  // AI生徒からの最初の挨拶メッセージ
   const welcomeText = `先生！今日から「${currentTopic}」について教えてくれるんだにゃ？よろしくね！まず何から教えてくれるかにゃ？🐱`;
-  
   appendMessage("assistant", welcomeText);
-  chatHistory.push({ role: "assistant", content: welcomeText });
 }
 
-// 画面にメッセージを追加
-function appendMessage(role, text) {
+function appendMessage(role, text, isError = false) {
   const logs = document.getElementById("chatLogs");
   const msgDiv = document.createElement("div");
-  msgDiv.className = `chat-msg ${role === 'assistant' ? 'cat' : 'user'}`;
+  msgDiv.className = `chat-msg ${role === 'assistant' ? 'cat' : 'user'} ${isError ? 'error' : ''}`;
 
   const avatar = role === 'assistant' ? '<div class="avatar">🐱</div>' : '<div class="avatar">👤</div>';
 
@@ -327,7 +152,6 @@ function appendMessage(role, text) {
   logs.scrollTop = logs.scrollHeight;
 }
 
-// メッセージ送信
 async function sendMessage() {
   const input = document.getElementById("userInput");
   const sendBtn = document.getElementById("sendBtn");
@@ -335,7 +159,6 @@ async function sendMessage() {
 
   if (!text) return;
 
-  // 1. 画面にユーザーメッセージを表示し、履歴に追加
   appendMessage("user", text);
   chatHistory.push({ role: "user", content: text });
   input.value = "";
@@ -351,26 +174,27 @@ async function sendMessage() {
         mode: "student",
         topic: currentTopic,
         explanation: text,
-        history: chatHistory // 正しく交互に並んだ履歴を送信
+        history: chatHistory
       })
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
-    if (data.reply) {
+    // 成功した場合のみ子猫の返答を表示
+    if (res.ok && data.reply) {
       appendMessage("assistant", data.reply);
       chatHistory.push({ role: "assistant", content: data.reply });
-
-      // 会話履歴を自動で保存（memo.html 用）
       saveToReportHistory();
     } else {
-      console.error("API応答エラー:", data);
-      appendMessage("assistant", "うーん……ちょっとうまく聞き取れなかったにゃ🐱 もう一度教えてほしいにゃ！");
+      // エラーの理由を赤文字でダイレクトに表示！
+      const errorMsg = data.error || `HTTPエラー: ${res.status} ${res.statusText}`;
+      appendMessage("assistant", `🚨 【通信失敗の原因】\n${errorMsg}`, true);
+      chatHistory.pop(); // エラーになった発言を履歴から削除
     }
 
   } catch (err) {
-    console.error("通信エラー:", err);
-    appendMessage("assistant", "ごめんにゃ、通信がうまくつながらなかったにゃ💦 もう一度送信してみてね！");
+    appendMessage("assistant", `🚨 【通信例外】\n${err.message}`, true);
+    chatHistory.pop();
   } finally {
     input.disabled = false;
     sendBtn.disabled = false;
@@ -379,33 +203,22 @@ async function sendMessage() {
 }
 
 function handleKeyPress(e) {
-  if (e.key === "Enter") {
-    sendMessage();
-  }
+  if (e.key === "Enter") sendMessage();
 }
 
-// memo.html（学習レポート）用に自動保存する処理
 function saveToReportHistory() {
   let memos = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
-  
   const now = new Date();
   const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
   const existingIndex = memos.findIndex(m => m.topic === currentTopic);
   
   const reportData = {
     id: existingIndex >= 0 ? memos[existingIndex].id : Date.now(),
-    topic: currentTopic,
-    date: dateStr,
-    status: "進行中",
-    history: chatHistory
+    topic: currentTopic, date: dateStr, status: "進行中", history: chatHistory
   };
 
-  if (existingIndex >= 0) {
-    memos[existingIndex] = reportData;
-  } else {
-    memos.push(reportData);
-  }
+  if (existingIndex >= 0) memos[existingIndex] = reportData;
+  else memos.push(reportData);
 
   localStorage.setItem("mikeneko_memos", JSON.stringify(memos));
 }
