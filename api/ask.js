@@ -1,8 +1,7 @@
-// 【① 503エラー（混雑）対策の自動リトライ付き通信関数】
+// 【503エラー（混雑）対策の自動リトライ付き通信関数】
 async function fetchWithRetry(url, options, retries = 2, delay = 1000) {
   for (let i = 0; i <= retries; i++) {
     const response = await fetch(url, options);
-    // 503（混雑）かつ、まだリトライ回数が残っている場合だけ1秒待って再試行
     if (response.status === 503 && i < retries) {
       console.log(`Google APIが混雑中のため、${delay}ms 後に再試行します (${i + 1}/${retries})...`);
       await new Promise(resolve => setTimeout(resolve, delay));
@@ -22,9 +21,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY が設定されていません。" });
   }
 
-  // 最新モデル名を定義
+  // 安定して動作するモデル名を指定
   const MODEL_NAME = "gemini-2.5-flash";
-
 
   try {
     const { mode, topic, level, explanation, history } = req.body;
@@ -36,14 +34,12 @@ export default async function handler(req, res) {
       const prompt = `あなたは「しるねこ」という学習アプリの学習設計AIです。
 学びたいテーマ：「${topic}」
 
-このテーマについて、初心者が理解を深めていくためのおすすめ学習ステップを4つ、特に重要なポイントを3つ作ってください。
+このテーマについて、初心者が理解を深めていくためのおすすめ学習ステップを4つ、そして【「${topic}」という分野そのものに関する重要な基礎知識・重要ポイント】を3つ作ってください。
 
 【ルール】
-・テーマが何であっても対応する
-・初心者でも理解しやすい順番にする
-・専門用語だけを並べない
-・学習ステップは「何を理解するか」が分かる文章にする
-・重要ポイントは短く具体的にする
+・学習ステップは初心者が「何を理解すればいいか」が順を追って分かる文章にする
+・重要ポイントは「毎日勉強する」といった学習方法のコツではなく、「${topic}」という分野自体の具体的な知識・概念・キーポイントにする
+・専門用語だけを並べず、初心者にも分かりやすく解説する
 
 必ず以下のJSON形式のみで出力してください：
 {
@@ -54,13 +50,12 @@ export default async function handler(req, res) {
     "学習ステップ4"
   ],
   "points": [
-    "重要ポイント1",
-    "重要ポイント2",
-    "重要ポイント3"
+    "重要ポイント1（${topic}の具体知識）",
+    "重要ポイント2（${topic}の具体知識）",
+    "重要ポイント3（${topic}の具体知識）"
   ]
 }`;
 
-      // fetch を fetchWithRetry に変更
       const response = await fetchWithRetry(
         `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
         {
@@ -102,12 +97,16 @@ export default async function handler(req, res) {
         parts: [{ text: item.content }]
       }));
 
+      // ユーザーからのメッセージ文を分かりやすく構築
+      const userMessage = explanation 
+        ? `【今回教える内容】\n${explanation}`
+        : `【先生からの最初の挨拶】\n今から「${topic}」について勉強を始めるよ！よろしくね！`;
+
       contents.push({
         role: "user",
-        parts: [{ text: `学習テーマ：${topic}\nこれまでの説明を踏まえた今回の説明：${explanation || "まだ説明はありません"}` }]
+        parts: [{ text: userMessage }]
       });
 
-      // fetch を fetchWithRetry に変更
       const response = await fetchWithRetry(
         `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
         {
@@ -116,15 +115,20 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             systemInstruction: {
               parts: [{
-                text: `あなたは「しるねこ」という学習アプリのAI生徒です。利用者が先生、あなたが予備知識ゼロの子猫生徒です。
+                text: `あなたは「しるねこ」という学習アプリのAI生徒です。
+現在学びたいテーマは【 ${topic || "指定されたテーマ"} 】です。あなたは今からこの「${topic || "指定されたテーマ"}」について、利用者の先生から教えてもらいます。
 
-【重要なルール】
-・いきなり正解を長く説明しない
-・利用者の説明を勝手に添削しない
-・質問は一度に1つだけ
-・初心者の生徒として自然に質問する
-・語尾に「にゃ」をつけて子猫らしくかわいく返答する
-・十分に理解できたら「CLEAR」と返す`
+【あなたの設定・キャラクター】
+・あなたは「${topic}」についての予備知識がゼロの子猫生徒です。
+・自分が今から学ぶテーマが「${topic}」であることをしっかり知っています。そのため「テーマってなに？」と聞き返してはいけません。
+・利用者が先生、あなたが生徒です。
+・語尾に「にゃ」をつけて子猫らしくかわいく返答してください。
+
+【会話のルール】
+・「${topic}」について先生（利用者）が教えてくれるので、素直に耳を傾け、気になったことや分からないことを1度に1つだけ質問してください。
+・いきなり自分で正解を長く解説しないでください。
+・利用者の説明を勝手に添削しないでください。
+・十分に理解できたら「CLEAR」と返してください。`
               }]
             },
             contents: contents
