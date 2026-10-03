@@ -1,4 +1,4 @@
-// 【① どんなエラーが発生しても自動で次のモデルへ切り替える通信関数】
+// 【① エラー発生時に自動で稼働中の控えモデルへ切り替える通信関数】
 async function fetchWithFallback(models, apiKey, payload) {
   let lastError = null;
 
@@ -16,9 +16,9 @@ async function fetchWithFallback(models, apiKey, payload) {
         return response;
       }
 
-      // 200系以外（404, 503, 400, 429等）はすべてログを出力して次のモデルへ切り替え
+      // 失敗時はGoogleからのエラー詳細ログを出力して次のモデルへ
       const errJson = await response.json().catch(() => ({}));
-      console.warn(`モデル ${modelName} でエラーが発生 (${response.status}):`, errJson);
+      console.warn(`モデル ${modelName} でエラーが発生 (${response.status}):`, errJson?.error?.message || errJson);
       lastError = new Error(`モデル ${modelName} がエラー (${response.status}) を返しました。`);
 
     } catch (err) {
@@ -40,12 +40,11 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY が設定されていません。" });
   }
 
-  // 試行するモデルの優先リスト（安定モデルを網羅）
+  // 現在正式に提供されている最新モデルのリスト
   const MODELS = [
-    "gemini-2.0-flash",
-    "gemini-1.5-flash",
     "gemini-2.5-flash",
-    "gemini-1.5-pro"
+    "gemini-2.5-pro",
+    "gemini-2.0-flash"
   ];
 
   try {
