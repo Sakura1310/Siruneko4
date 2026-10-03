@@ -1,245 +1,476 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>しるねこ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>みけねこ授業</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans JP",
+        "Hiragino Kaku Gothic ProN",
+        sans-serif;
+      background: #fffdf9;
+      color: #222;
+    }
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    /* ヘッダー */
+    .header {
+      height: 88px;
+      padding: 14px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #f2e8d3;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-icon {
+      width: 47px;
+      height: 47px;
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: linear-gradient(135deg, #ffb52b, #ff8e00);
+      font-size: 24px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      color: #999;
+    }
+
+    .nav {
+      display: flex;
+      gap: 5px;
+    }
+
+    .nav-button {
+      width: 43px;
+      height: 43px;
+      border: 0;
+      border-radius: 13px;
+      background: transparent;
+      font-size: 21px;
+      cursor: pointer;
+    }
+
+    .nav-button.active {
+      background: #fff1c9;
+    }
+
+    /* メイン */
+    .main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 92px 22px 130px;
+      text-align: center;
+    }
+
+    .ai-label {
+      display: inline-block;
+      padding: 9px 18px;
+      border-radius: 30px;
+
+      background: #fff4d0;
+      color: #e88a00;
+
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 30px 0 0;
+
+      font-size: clamp(32px, 7vw, 54px);
+      line-height: 1.35;
+      letter-spacing: -1px;
+      font-weight: 900;
+    }
+
+    h1 span {
+      color: #ed8700;
+    }
+
+    .description {
+      margin: 28px auto 0;
+      max-width: 680px;
+
+      color: #888;
+      font-size: 15px;
+      line-height: 2;
+    }
+
+    /* 入力 */
+    .lesson-box {
+      width: 100%;
+      margin: 43px auto 0;
+
+      display: flex;
+      align-items: center;
+
+      padding: 7px;
+
+      background: #fff;
+      border: 1px solid #f0e2c2;
+      border-radius: 38px;
+
+      box-shadow: 0 12px 30px rgba(255, 184, 60, 0.12);
+    }
+
+    .lesson-box input {
+      flex: 1;
+      min-width: 0;
+
+      border: 0;
+      outline: 0;
+      background: transparent;
+
+      padding: 0 22px;
+
+      font-size: 16px;
+      color: #333;
+    }
+
+    .lesson-box input::placeholder {
+      color: #c8c8c8;
+    }
+
+    .start-button {
+      border: 0;
+      border-radius: 32px;
+
+      padding: 17px 28px;
+
+      background: linear-gradient(
+        135deg,
+        #ffe8a8,
+        #ffc99b
+      );
+
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+
+      cursor: pointer;
+      white-space: nowrap;
+
+      transition: transform 0.15s;
+    }
+
+    .start-button:active {
+      transform: scale(0.97);
+    }
+
+    .start-button span {
+      margin-left: 7px;
+    }
+
+    /* テーマ */
+    .example-title {
+      margin-top: 38px;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .topics {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+
+      margin-top: 16px;
+    }
+
+    .topics button {
+      padding: 10px 18px;
+
+      border: 1px solid #e7e7e7;
+      border-radius: 25px;
+
+      background: #fff;
+
+      color: #666;
+      font-size: 13px;
+
+      cursor: pointer;
+    }
+
+    .topics button:active {
+      background: #fff5df;
+      border-color: #ffc56d;
+    }
+
+    /* チャット編集 */
+    .chat-edit {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+
+      border: 0;
+      border-radius: 19px;
+
+      padding: 15px 22px;
+
+      background: #111;
+      color: #fff;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18);
+
+      cursor: pointer;
+    }
+
+    /* スマホ */
+    @media (max-width: 600px) {
+
+      .header {
+        height: 78px;
+        padding: 12px 15px;
+      }
+
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 21px;
+      }
+
+      .brand-name {
+        font-size: 16px;
+      }
+
+      .brand-sub {
+        font-size: 9px;
+      }
+
+      .nav-button {
+        width: 37px;
+        height: 37px;
+        font-size: 18px;
+      }
+
+      .main {
+        padding: 66px 20px 120px;
+      }
+
+      .ai-label {
+        font-size: 13px;
+        padding: 8px 15px;
+      }
+
+      h1 {
+        margin-top: 25px;
+        font-size: 31px;
+      }
+
+      .description {
+        margin-top: 24px;
+        font-size: 13px;
+        line-height: 1.9;
+      }
+
+      .lesson-box {
+        display: block;
+        padding: 7px;
+        border-radius: 25px;
+      }
+
+      .lesson-box input {
+        width: 100%;
+        height: 52px;
+        padding: 0 17px;
+        font-size: 15px;
+      }
+
+      .start-button {
+        width: 100%;
+        padding: 15px;
+        font-size: 15px;
+      }
+
+      .example-title {
+        margin-top: 34px;
+      }
+
+      .topics button {
+        padding: 9px 14px;
+        font-size: 12px;
+      }
+
+      .chat-edit {
+        right: 14px;
+        bottom: 14px;
+        padding: 13px 18px;
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 
-<body style="font-family:sans-serif; background:#fff7fb; text-align:center; padding:40px 20px;">
+<body>
 
-<h1 style="color:#555;">🐈 しるねこ</h1>
+  <header class="header">
 
-<div id="app">
+    <div class="brand">
+      <div class="brand-icon">🐾</div>
 
-  <p style="font-size:20px;">こんにちは！</p>
+      <div>
+        <div class="brand-name">みけねこ授業</div>
+        <div class="brand-sub">教えて学ぶ・ふりかえる</div>
+      </div>
+    </div>
 
-  <h2>今日は何を勉強する？</h2>
+    <nav class="nav">
+      <button class="nav-button active">🎓</button>
+      <button class="nav-button">📖</button>
+      <button class="nav-button">📝</button>
+    </nav>
 
-  <p>知りたいことを自由に入力してね。</p>
+  </header>
 
-  <input
-    id="topic"
-    type="text"
-    placeholder="例：NSAIDs、簿記、英語、哲学..."
-    style="width:90%; max-width:400px; padding:14px; font-size:16px; border:1px solid #ddd; border-radius:10px;"
-  >
 
-  <br><br>
+  <main class="main">
 
-  <button
-    onclick="startLearning()"
-    style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
-  >
-    📚 学習をはじめる
-  </button>
+    <div class="ai-label">
+      ✨ AIと一緒に、教えて学ぶ
+    </div>
 
-</div>
 
-<script>
+    <h1>
+      学びたいテーマを入力して、
+      <br>
+      <span>子猫生徒に教えてみよう</span>
+    </h1>
 
-let topic = "";
-let level = "";
 
-function startLearning() {
-
-  topic = document.getElementById("topic").value.trim();
-
-  if (!topic) {
-    alert("🐈 まず、知りたいことを入力してね！");
-    return;
-  }
-
-  document.getElementById("app").innerHTML = `
-
-    <h2>🐈 ${topic}</h2>
-
-    <p style="font-size:19px;">
-      まず、あなたがどのくらい知っているか教えてね。
+    <p class="description">
+      あなたが「先生」、AIが予備知識ゼロの
+      「みけねこ生徒🐱」。
+      <br>
+      わかりやすく説明するほど、あなたの理解も深まります。
     </p>
 
-    <button onclick="chooseLevel('まったく知らない')"
-      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
-      🌱 まったく知らない
-    </button>
 
-    <button onclick="chooseLevel('少し知っている')"
-      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
-      🌿 少し知っている
-    </button>
+    <div class="lesson-box">
 
-    <button onclick="chooseLevel('基本は知っている')"
-      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
-      🌳 基本は知っている
-    </button>
+      <input
+        id="topicInput"
+        type="text"
+        placeholder="例: 光合成の仕組み"
+      >
 
-    <button onclick="chooseLevel('かなり詳しい')"
-      style="display:block; width:90%; max-width:400px; margin:12px auto; padding:15px; font-size:16px; border:none; border-radius:12px; background:#ffe5ef;">
-      🌟 かなり詳しい
-    </button>
-
-  `;
-}
-
-function chooseLevel(selectedLevel) {
-
-  level = selectedLevel;
-
-  document.getElementById("app").innerHTML = `
-
-    <h2>🐈 ${topic}</h2>
-
-    <p style="font-size:18px;">
-      「${level}」なんだね！
-    </p>
-
-    <h3>📚 学習ルート</h3>
-
-    <div style="background:white; padding:20px; border-radius:15px; max-width:400px; margin:20px auto; text-align:left;">
-
-      <p>① 🌱 基礎を確認する</p>
-
-      <p>② 📖 重要な知識を学ぶ</p>
-
-      <p>③ 🔎 具体例を知る</p>
-
-      <p>④ 💭 自分で考えてみる</p>
-
-      <p>⑤ 🐈 しるねこに説明してみる</p>
+      <button
+        class="start-button"
+        onclick="startLesson()"
+      >
+        授業開始
+        <span>→</span>
+      </button>
 
     </div>
 
-    <button
-      onclick="beginStudy()"
-      style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
-    >
-      📖 学習をはじめる
-    </button>
 
-  `;
-}
-
-function beginStudy() {
-
-  document.getElementById("app").innerHTML = `
-
-    <h2>📖 ${topic}を学ぼう</h2>
-
-    <p style="font-size:18px;">
-      ここから勉強タイム！🐈
-    </p>
-
-    <p>
-      まずは自分で学んでみよう。<br>
-      本や動画、教科書などを使ってOKだよ。
-    </p>
-
-    <br>
-
-    <button
-      onclick="teacherMode()"
-      style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
-    >
-      🐈 しるねこに教える
-    </button>
-
-  `;
-}
-
-function teacherMode() {
-
-  document.getElementById("app").innerHTML = `
-
-    <h2>🐈 先生、教えて！</h2>
-
-    <p style="font-size:18px;">
-      ここからは、あなたが先生だよ。
-    </p>
-
-    <p>
-      「${topic}」について、<br>
-      自分の言葉でしるねこに説明してみてね。
-    </p>
-
-    <textarea
-      placeholder="しるねこに教えてみよう..."
-      style="width:90%; max-width:400px; height:180px; padding:15px; font-size:16px; border:1px solid #ddd; border-radius:10px;"
-    ></textarea>
-
-    <br><br>
-
-  <button
-  onclick="sendExplanation()"
-  style="padding:14px 25px; font-size:17px; border:none; border-radius:12px; background:#ffd6e8;"
->
-  🐈 説明する
-</button>
-
-  `;
-
-}
+    <div class="example-title">
+      テーマ例
+    </div>
 
 
-async function sendExplanation() {
+    <div class="topics">
 
-  const explanation = document.querySelector("textarea").value;
+      <button onclick="selectTopic('光合成の仕組み')">
+        光合成の仕組み
+      </button>
 
-  if (!explanation.trim()) {
-    alert("🐈 まず、しるねこに説明してみてね！");
-    return;
-  }
+      <button onclick="selectTopic('ブロックチェーン')">
+        ブロックチェーン
+      </button>
 
-  document.getElementById("app").innerHTML = `
-    <h2>🐈 しるねこ考え中...</h2>
-    <p>先生の説明を聞いてるよ！</p>
-  `;
+      <button onclick="selectTopic('相対性理論')">
+        相対性理論
+      </button>
 
-  try {
+      <button onclick="selectTopic('なぜ虹が見えるのか')">
+        なぜ虹が見えるのか
+      </button>
 
-    const response = await fetch("/api/ask", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        topic: topic,
-        level: level,
-        explanation: explanation
-      })
-    });
+      <button onclick="selectTopic('GDPとは何か')">
+        GDPとは何か
+      </button>
 
-    const data = await response.json();
+    </div>
 
-    document.getElementById("app").innerHTML = `
-      <h2>🐈 しるねこ</h2>
-      <p style="font-size:18px; line-height:1.8;">
+  </main>
 
 
-      ${data.reply || data.error || "AIから返事がありませんでした。"}
-
-      </p>
-    `;
-
-  } catch (error) {
+  <button class="chat-edit" onclick="editWithChat()">
+    💬 チャットで編集
+  </button>
 
 
-console.error(error);
-alert("AIエラー：" + error.message);
+  <script>
+
+    function selectTopic(topic) {
+      document.getElementById("topicInput").value = topic;
+    }
 
 
-    document.getElementById("app").innerHTML = `
+    function startLesson() {
+
+      const topic =
+        document.getElementById("topicInput").value.trim();
+
+      if (!topic) {
+        alert("学びたいテーマを入力してね🐱");
+        return;
+      }
+
+      /*
+       * ここは後でAI授業画面につなげます。
+       *
+       * 今は入力されたテーマを確認するだけ。
+       */
+      alert(
+        "「" + topic + "」の授業を開始します🐱✨"
+      );
+    }
 
 
-      <h2>🐈 あれ？</h2>
-      <p>AIにつながらなかったみたい……。</p>
-      <p>もう一度試してみてね。</p>
-    `;
+    function editWithChat() {
+      alert("ここからAIにアプリの編集をお願いできるようにします🐱");
+    }
 
-  }
-}
-
-
-</script>
+  </script>
 
 </body>
 </html>
