@@ -238,28 +238,6 @@
       border-color: #ffc56d;
     }
 
-    /* チャット編集 */
-    .chat-edit {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-
-      border: 0;
-      border-radius: 19px;
-
-      padding: 15px 22px;
-
-      background: #111;
-      color: #fff;
-
-      font-size: 14px;
-      font-weight: 700;
-
-      box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18);
-
-      cursor: pointer;
-    }
-
     /* スマホ */
     @media (max-width: 600px) {
 
@@ -335,13 +313,6 @@
         padding: 9px 14px;
         font-size: 12px;
       }
-
-      .chat-edit {
-        right: 14px;
-        bottom: 14px;
-        padding: 13px 18px;
-        font-size: 13px;
-      }
     }
   </style>
 </head>
@@ -398,7 +369,6 @@
         placeholder="例: 光合成の仕組み"
       >
 
-      <!-- ボタン部分を onclick="startLesson()" に修正 -->
       <button type="button" class="start-button" onclick="startLesson()">
         授業開始
         <span>→</span>
@@ -439,11 +409,6 @@
   </main>
 
 
-  <button class="chat-edit" onclick="editWithChat()">
-    💬 チャットで編集
-  </button>
-
-
   <script>
 
     function selectTopic(topic) {
@@ -462,11 +427,6 @@
       window.location.href =
         "lesson.html?topic=" +
         encodeURIComponent(topic);
-    }
-
-
-    function editWithChat() {
-      alert("ここからAIにアプリの編集をお願いできるようにします🐱");
     }
 
   </script>
