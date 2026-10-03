@@ -1,3 +1,17 @@
+// 【① 503エラー（混雑）対策の自動リトライ付き通信関数】
+async function fetchWithRetry(url, options, retries = 2, delay = 1000) {
+  for (let i = 0; i <= retries; i++) {
+    const response = await fetch(url, options);
+    // 503（混雑）かつ、まだリトライ回数が残っている場合だけ1秒待って再試行
+    if (response.status === 503 && i < retries) {
+      console.log(`Google APIが混雑中のため、${delay}ms 後に再試行します (${i + 1}/${retries})...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      continue;
+    }
+    return response;
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "POST only" });
@@ -8,7 +22,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "環境変数 GEMINI_API_KEY が設定されていません。" });
   }
 
-  // モデル名を定数として定義（今後の変更を容易にするため）
+  // 最新モデル名を定義
   const MODEL_NAME = "gemini-3.8-flash";
 
   try {
@@ -45,7 +59,8 @@ export default async function handler(req, res) {
   ]
 }`;
 
-      const response = await fetch(
+      // fetch を fetchWithRetry に変更
+      const response = await fetchWithRetry(
         `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
         {
           method: "POST",
@@ -91,7 +106,8 @@ export default async function handler(req, res) {
         parts: [{ text: `学習テーマ：${topic}\nこれまでの説明を踏まえた今回の説明：${explanation || "まだ説明はありません"}` }]
       });
 
-      const response = await fetch(
+      // fetch を fetchWithRetry に変更
+      const response = await fetchWithRetry(
         `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`,
         {
           method: "POST",
