@@ -352,9 +352,12 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-button active">🎓</button>
-      <button class="nav-button">📖</button>
-      <button class="nav-button">📝</button>
+       <a href="lesson.html" class="nav-button active">🎓</a>
+      
+        <a href="memo.html" class="nav-button">📖</a>
+      
+         <a href="review.html" class="nav-button">📝</a>
+      
     </nav>
 
   </header>
@@ -390,13 +393,19 @@
         placeholder="例: 光合成の仕組み"
       >
 
-      <button
-        class="start-button"
-        onclick="startLesson()"
-      >
-        授業開始
-        <span>→</span>
-      </button>
+      <a
+  href="lesson.html"
+  class="start-button"
+        .start-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+>
+  授業開始
+  <span>→</span>
+</a>
 
     </div>
 
