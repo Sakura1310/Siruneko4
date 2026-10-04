@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ログイン - しるねこ授業</title>
+  <title>ログイン / アカウント作成 - しるねこ授業</title>
 
   <style>
     * {
@@ -19,10 +18,8 @@
         "Noto Sans JP",
         "Hiragino Kaku Gothic ProN",
         sans-serif;
-      /* 指定背景色: #ffefd5 (温かいパステルオレンジ) */
-      background-color: #ffefd5;
-      /* 指定文字色: #cd853f */
-      color: #cd853f;
+      background-color: #ffefd5; /* パステルオレンジ */
+      color: #cd853f;          /* peru */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -164,6 +161,18 @@
       transform: scale(0.98);
     }
 
+    /* ログイン / 新規登録 切り替えボタン */
+    .toggle-mode-btn {
+      margin-top: 18px;
+      background: none;
+      border: none;
+      color: #b5722f;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
     /* 下部イラストエリア */
     .illustration-area {
       margin-top: 24px;
@@ -197,51 +206,76 @@
 
   <main class="login-container">
     <div class="login-card">
-      <h1 class="card-title">ログイン</h1>
-      <p class="card-sub">おなまえとパスワードを入力してね</p>
+      <h1 class="card-title" id="pageTitle">ログイン</h1>
+      <p class="card-sub" id="pageSub">おなまえとパスワードを入力してね</p>
 
-      <form id="loginForm" onsubmit="handleLogin(event)">
+      <form id="authForm" onsubmit="handleAuth(event)">
         <!-- 名前（ひらがな＋数字）入力欄 -->
         <div class="form-group">
           <label for="username">おなまえ（ひらがな・数字）</label>
           <input 
             type="text" 
             id="username" 
-            placeholder="例: しるねこ1234" 
+            placeholder="例: さくら1210" 
             required 
             oninput="validateUsername(this)"
           >
           <div class="error-msg" id="nameError">ひらがなと数字で入力してね🐱</div>
         </div>
 
-        <!-- パスワード（数字4ケタ）入力欄 -->
+        <!-- パスワード入力欄 -->
         <div class="form-group">
-          <label for="password">パスワード（数字4ケタ）</label>
+          <label for="password">パスワード</label>
           <input 
             type="password" 
             id="password" 
-            placeholder="例: 1234" 
-            maxlength="4"
-            inputmode="numeric"
-            pattern="[0-9]*"
+            placeholder="数字や英数字を入力" 
             required
-            oninput="validatePassword(this)"
           >
-          <div class="error-msg" id="passError">数字4ケタで入力してね🐱</div>
         </div>
 
-        <button type="submit" class="submit-btn">ログインする 🐾</button>
+        <button type="submit" class="submit-btn" id="submitBtn">ログインする 🐾</button>
       </form>
+
+      <!-- 切り替えボタン -->
+      <button type="button" class="toggle-mode-btn" id="toggleBtn" onclick="toggleAuthMode()">
+        はじめての方はこちら（アカウント作成）
+      </button>
     </div>
 
-  
-   
+    <!-- 下の余白に画像を挿入 -->
+    <div class="illustration-area">
+      <img src="1000004488_2.jpg" alt="金木犀と白ねこ" class="illustration-img">
+    </div>
   </main>
 
   <script>
-    // 1. おなまえ入力チェック（ひらがな＋数字）
+    let isRegisterMode = false; // 新規登録モードかどうか
+
+    // モード切り替え処理
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+
+      const pageTitle = document.getElementById("pageTitle");
+      const pageSub = document.getElementById("pageSub");
+      const submitBtn = document.getElementById("submitBtn");
+      const toggleBtn = document.getElementById("toggleBtn");
+
+      if (isRegisterMode) {
+        pageTitle.textContent = "アカウント作成";
+        pageSub.textContent = "新しいおなまえとパスワードを登録するにゃ";
+        submitBtn.textContent = "アカウントをつくる 🐾";
+        toggleBtn.textContent = "すでにアカウントをお持ちの方（ログイン）";
+      } else {
+        pageTitle.textContent = "ログイン";
+        pageSub.textContent = "おなまえとパスワードを入力してね";
+        submitBtn.textContent = "ログインする 🐾";
+        toggleBtn.textContent = "はじめての方はこちら（アカウント作成）";
+      }
+    }
+
+    // おなまえ入力チェック（ひらがな＋数字）
     function validateUsername(input) {
-      // ひらがな・長音記号・半角全角数字・スペースを許可する正規表現
       const validRegex = /^[ぁ-んー0-9０-９\s]*$/;
       const errorEl = document.getElementById("nameError");
 
@@ -252,37 +286,21 @@
       }
     }
 
-    // 2. パスワード入力チェック（数字4桁）
-    function validatePassword(input) {
-      // 半角全角数字のみを許可
-      input.value = input.value.replace(/[^0-9]/g, ''); // 半角数字以外を自動除去
-      const errorEl = document.getElementById("passError");
-
-      if (input.value.length > 0 && input.value.length !== 4) {
-        errorEl.style.display = "block";
-      } else {
-        errorEl.style.display = "none";
-      }
-    }
-
-    // 3. ログイン送信処理（サーバー server.mjs へ送信）
-    async function handleLogin(event) {
+    // 認証処理（送信）
+    async function handleAuth(event) {
       event.preventDefault();
 
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
 
-      if (password.length !== 4) {
-        alert("パスワードは数字4ケタで入力してね🐱");
-        return;
-      }
+      // エンドポイントの切り替え (/api/register または /api/login)
+      const endpoint = isRegisterMode ? '/api/register' : '/api/login';
 
       try {
-        // Node.js サーバーへ送信
-        const response = await fetch('http://localhost:3000/api/login', {
+        const response = await fetch(`http://localhost:3000${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // セッション（Cookie）維持に必要
+          credentials: 'include',
           body: JSON.stringify({ username, password })
         });
 
@@ -290,9 +308,9 @@
 
         if (result.success) {
           alert(result.message);
-          window.location.href = "index.html"; // ログイン成功時にトップページへ
+          window.location.href = "index.html"; // 成功したらホーム画面へ
         } else {
-          alert(result.message || "ログインに失敗しました");
+          alert(result.message || "失敗しました");
         }
 
       } catch (error) {
