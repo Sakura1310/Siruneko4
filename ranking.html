@@ -1,1 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ランキング - しるねこ授業</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans JP",
+        "Hiragino Kaku Gothic ProN",
+        sans-serif;
+      background: #fffdf9;
+      color: #222;
+    }
+
+    /* ヘッダー */
+    .header {
+      height: 88px;
+      padding: 14px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #f2e8d3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .brand-icon {
+      width: 47px;
+      height: 47px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffb52b, #ff8e00);
+      font-size: 24px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      color: #999;
+    }
+
+    .nav {
+      display: flex;
+      gap: 5px;
+    }
+
+    .nav-button {
+      width: 43px;
+      height: 43px;
+      border: 0;
+      border-radius: 13px;
+      background: transparent;
+      font-size: 21px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-button.active {
+      background: #fff1c9;
+    }
+
+    /* メインコンテナ */
+    .main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 100px;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+
+    /* タブ切り替えボタン */
+    .tab-container {
+      display: flex;
+      background: #f5eedf;
+      padding: 4px;
+      border-radius: 30px;
+      margin-bottom: 24px;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 12px 0;
+      border: 0;
+      border-radius: 26px;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 700;
+      color: #887a65;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-button.active {
+      background: #ffffff;
+      color: #e88a00;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* ランキングリスト */
+    .ranking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ranking-card {
+      background: #ffffff;
+      border: 1px solid #f0e2c2;
+      border-radius: 18px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(255, 184, 60, 0.06);
+    }
+
+    .ranking-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .rank-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      background: #f0f0f0;
+      color: #666;
+    }
+
+    /* 上位3位の装飾 */
+    .rank-1 { background: #ffe600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    .rank-2 { background: #d7d7d7; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    .rank-3 { background: #e2a061; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .topic-title {
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .score-value {
+      font-size: 20px;
+      font-weight: 900;
+      color: #e88a00;
+    }
+
+    .score-unit {
+      font-size: 12px;
+      font-weight: 700;
+      margin-left: 2px;
+    }
+
+    /* スマホ対応 */
+    @media (max-width: 600px) {
+      .header { height: 78px; padding: 12px 15px; }
+      .brand-icon { width: 42px; height: 42px; font-size: 21px; }
+      .brand-name { font-size: 16px; }
+      .brand-sub { font-size: 9px; }
+      .nav-button { width: 37px; height: 37px; font-size: 18px; }
+      .ranking-card { padding: 12px 16px; }
+      .score-value { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="brand" title="ホームへ戻る">
+      <div class="brand-icon">🐾</div>
+      <div>
+        <div class="brand-name">しるねこ授業</div>
+        <div class="brand-sub">教えて学ぶ・ふりかえる</div>
+      </div>
+    </a>
+
+    <nav class="nav">
+      <a href="index.html" class="nav-button" title="ホーム">🏠</a>
+      <a href="lesson.html" class="nav-button" title="授業">🎓</a>
+      <!-- ランキング画面なので 🏅 が active -->
+      <a href="ranking.html" class="nav-button active" title="ランキング">🏅</a>
+      <a href="memo.html" class="nav-button" title="ノート">📖</a>
+      <a href="review.html" class="nav-button" title="レポート">📝</a>
+    </nav>
+  </header>
+
+  <main class="main">
+    <div class="page-title">🏅 分かりやすさスコア Ranking</div>
+
+    <!-- 切り替えタブ -->
+    <div class="tab-container">
+      <button class="tab-button active" onclick="switchTab('my')">自分の記録</button>
+      <button class="tab-button" onclick="switchTab('all')">全体ランキング</button>
+    </div>
+
+    <!-- ランキング一覧領域 -->
+    <div id="rankingList" class="ranking-list">
+      <!-- JavaScriptで動的に表示 -->
+    </div>
+  </main>
+
+  <script>
+    // サンプルデータ（実際はLocalStorageやデータベースから取得）
+    const myHistory = [
+      { topic: "光合成の仕組み", score: 920, date: "2026/10/01" },
+      { topic: "相対性理論", score: 850, date: "2026/09/28" },
+      { topic: "GDPとは何か", score: 780, date: "2026/09/25" }
+    ];
+
+    const globalRanking = [
+      { name: "みけねこマスター", topic: "量子力学", score: 980 },
+      { name: "ぽてと先生", topic: "簿記3級の基礎", score: 950 },
+      { name: "ひまわり", topic: "光合成の仕組み", score: 920 },
+      { name: "たくみ", topic: "ブロックチェーン", score: 890 },
+      { name: "さくら", topic: "相対性理論", score: 850 }
+    ];
+
+    // 初期表示（自分の記録）
+    renderMyRanking();
+
+    function switchTab(type) {
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      if (type === 'my') {
+        buttons[0].classList.add('active');
+        renderMyRanking();
+      } else {
+        buttons[1].classList.add('active');
+        renderGlobalRanking();
+      }
+    }
+
+    // 自己ランキング表示
+    function renderMyRanking() {
+      const container = document.getElementById('rankingList');
+      if (myHistory.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:#999; padding:40px;">まだ授業の記録がないにゃ🐱<br>授業を受けてスコアを獲得しよう！</div>`;
+        return;
+      }
+
+      container.innerHTML = myHistory.map((item, index) => {
+        const rankClass = index < 3 ? `rank-${index + 1}` : '';
+        return `
+          <div class="ranking-card">
+            <div class="ranking-left">
+              <div class="rank-badge ${rankClass}">${index + 1}</div>
+              <div class="user-info">
+                <div class="user-name">${item.topic}</div>
+                <div class="topic-title">${item.date} の挑戦</div>
+              </div>
+            </div>
+            <div>
+              <span class="score-value">${item.score}</span>
+              <span class="score-unit">pt</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 全体ランキング表示
+    function renderGlobalRanking() {
+      const container = document.getElementById('rankingList');
+      container.innerHTML = globalRanking.map((item, index) => {
+        const rankClass = index < 3 ? `rank-${index + 1}` : '';
+        return `
+          <div class="ranking-card">
+            <div class="ranking-left">
+              <div class="rank-badge ${rankClass}">${index + 1}</div>
+              <div class="user-info">
+                <div class="user-name">${item.name}</div>
+                <div class="topic-title">テーマ: ${item.topic}</div>
+              </div>
+            </div>
+            <div>
+              <span class="score-value">${item.score}</span>
+              <span class="score-unit">pt</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
 
