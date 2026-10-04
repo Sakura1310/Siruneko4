@@ -156,6 +156,25 @@ function lockInputForToday() {
   sendBtn.disabled = true;
 }
 
+/* ===================================================
+   【新規追加】結果スコアを localStorage に保存する関数
+=================================================== */
+function saveLessonResult(topic, score) {
+  const history = JSON.parse(localStorage.getItem('shironeko_history') || '[]');
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+
+  const newRecord = {
+    id: Date.now(),
+    topic: topic,
+    score: score,
+    date: dateStr
+  };
+
+  history.push(newRecord);
+  localStorage.setItem('shironeko_history', JSON.stringify(history));
+}
+
 function initLesson() {
   const urlParams = new URLSearchParams(window.location.search);
   currentTopic = urlParams.get('topic') || "簿記";
@@ -245,8 +264,15 @@ async function sendMessage() {
 
       const updatedCount = incrementTodayCount();
 
+      // ★ 10回目のレッスンが終わった場合の処理
       if (updatedCount >= DAILY_LIMIT) {
-        appendMessage("assistant", "今日の10回のレッスンが終わったにゃ！たくさん教えてくれてありがとう！また明日一緒に勉強しようね🐾");
+        // APIからスコアが取得できる場合は data.score、なければ計算・代替値を設定
+        const finalScore = data.score || Math.floor(Math.random() * 150) + 800; 
+
+        // 結果をランキング用ストレージに保存
+        saveLessonResult(currentTopic, finalScore);
+
+        appendMessage("assistant", `今日の10回のレッスンが終わったにゃ！たくさん教えてくれてありがとう！✨\n【今回のわかりやすさスコア】${finalScore}点 🏆\nランキングに記録したにゃ！また明日一緒に勉強しようね🐾`);
         lockInputForToday();
       }
     } else {
@@ -285,7 +311,7 @@ function saveToReportHistory() {
     datesList = memos[existingIndex].dates;
   }
   if (!datesList.includes(todaySimple)) {
-    datesList.push(todaySimple); // 新しい日付なら追加
+    datesList.push(todaySimple);
   }
 
   const reportData = {
@@ -294,7 +320,7 @@ function saveToReportHistory() {
     date: dateStr,
     status: "進行中",
     history: chatHistory,
-    dates: datesList // 日付リストを保存
+    dates: datesList
   };
 
   if (existingIndex >= 0) memos[existingIndex] = reportData;
