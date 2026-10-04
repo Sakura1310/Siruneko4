@@ -10,8 +10,12 @@ export default async function handler(req, res) {
 
   const { topic, history } = req.body;
 
-  // Googleが指定する最新のモデル名に更新
-  const models = ["gemini-3.8-flash", "gemini-2.0-flash-exp"];
+  // 現在確実に利用可能なモデルの候補（上から順に試行されます）
+  const models = [
+    "gemini-1.5-flash",
+    "gemini-1.5-pro",
+    "gemini-1.0-pro"
+  ];
   let errorLogs = [];
 
   // 履歴の整形（先頭を必ず user にする）
@@ -55,6 +59,5 @@ export default async function handler(req, res) {
     }
   }
 
-  // すべて失敗した場合のみログを返却
   return res.status(500).json({ error: errorLogs.join(" / ") });
 }
