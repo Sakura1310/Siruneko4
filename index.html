@@ -39,10 +39,19 @@
       justify-content: space-between;
     }
 
+    /* ロゴ全体をリンクに変更＆デザイン維持 */
     .brand {
       display: flex;
       align-items: center;
       gap: 11px;
+      text-decoration: none; /* リンクの下線を消す */
+      color: inherit;         /* 文字色を継承 */
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .brand:active {
+      opacity: 0.8; /* タップした時に少しだけ透明にしてフィードバック */
     }
 
     .brand-icon {
@@ -86,6 +95,8 @@
       align-items: center;
       justify-content: center;
       text-decoration: none;
+      color: inherit;
+      transition: background-color 0.15s;
     }
 
     .nav-button.active {
@@ -321,20 +332,22 @@
 
   <header class="header">
 
-    <div class="brand">
+    <!-- ① ロゴ全体をホームへのリンク化 -->
+    <a href="index.html" class="brand" title="ホームへ戻る">
       <div class="brand-icon">🐾</div>
 
       <div>
         <div class="brand-name">しるねこ授業</div>
         <div class="brand-sub">教えて学ぶ・ふりかえる</div>
       </div>
-    </div>
+    </a>
 
+    <!-- ② ナビゲーションの配置・activeを整理 -->
     <nav class="nav">
-      <a href="index.html" class="active" title="ホーム">🏠</a>
-      <a href="index.html" class="nav-button active">🎓</a>
-      <a href="memo.html" class="nav-button">📖</a>
-      <a href="review.html" class="nav-button">📝</a>
+      <a href="index.html" class="nav-button active" title="ホーム">🏠</a>
+      <a href="lesson.html" class="nav-button" title="授業">🎓</a>
+      <a href="memo.html" class="nav-button" title="ノート">📖</a>
+      <a href="review.html" class="nav-button" title="レポート">📝</a>
     </nav>
 
   </header>
