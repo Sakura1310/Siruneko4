@@ -6,23 +6,15 @@
   <title>ランキング - しるねこ授業</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Noto Sans JP",
-        "Hiragino Kaku Gothic ProN",
-        sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
       background: #fffdf9;
       color: #222;
     }
 
-    /* ヘッダー */
     .header {
       height: 88px;
       padding: 14px 20px;
@@ -39,7 +31,6 @@
       gap: 11px;
       text-decoration: none;
       color: inherit;
-      cursor: pointer;
     }
 
     .brand-icon {
@@ -53,21 +44,10 @@
       font-size: 24px;
     }
 
-    .brand-name {
-      font-size: 18px;
-      font-weight: 800;
-    }
+    .brand-name { font-size: 18px; font-weight: 800; }
+    .brand-sub { margin-top: 2px; font-size: 11px; color: #999; }
 
-    .brand-sub {
-      margin-top: 2px;
-      font-size: 11px;
-      color: #999;
-    }
-
-    .nav {
-      display: flex;
-      gap: 5px;
-    }
+    .nav { display: flex; gap: 5px; }
 
     .nav-button {
       width: 43px;
@@ -84,11 +64,8 @@
       color: inherit;
     }
 
-    .nav-button.active {
-      background: #fff1c9;
-    }
+    .nav-button.active { background: #fff1c9; }
 
-    /* メインコンテナ */
     .main {
       max-width: 680px;
       margin: 0 auto;
@@ -102,7 +79,6 @@
       margin-bottom: 24px;
     }
 
-    /* タブ切り替えボタン */
     .tab-container {
       display: flex;
       background: #f5eedf;
@@ -130,7 +106,6 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
-    /* ランキングリスト */
     .ranking-list {
       display: flex;
       flex-direction: column;
@@ -167,48 +142,31 @@
       color: #666;
     }
 
-    /* 上位3位の装飾 */
     .rank-1 { background: #ffe600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
     .rank-2 { background: #d7d7d7; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
     .rank-3 { background: #e2a061; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-    .user-info {
-      display: flex;
-      flex-direction: column;
+    .user-info { display: flex; flex-direction: column; }
+    .user-name { font-weight: 700; font-size: 15px; }
+    .topic-title { font-size: 12px; color: #888; margin-top: 2px; }
+
+    .score-value { font-size: 20px; font-weight: 900; color: #e88a00; }
+    .score-unit { font-size: 12px; font-weight: 700; margin-left: 2px; }
+
+    .empty-message {
+      text-align: center;
+      color: #999;
+      padding: 50px 20px;
+      line-height: 1.8;
+      font-size: 14px;
     }
 
-    .user-name {
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .topic-title {
-      font-size: 12px;
-      color: #888;
-      margin-top: 2px;
-    }
-
-    .score-value {
-      font-size: 20px;
-      font-weight: 900;
-      color: #e88a00;
-    }
-
-    .score-unit {
-      font-size: 12px;
-      font-weight: 700;
-      margin-left: 2px;
-    }
-
-    /* スマホ対応 */
     @media (max-width: 600px) {
       .header { height: 78px; padding: 12px 15px; }
       .brand-icon { width: 42px; height: 42px; font-size: 21px; }
       .brand-name { font-size: 16px; }
       .brand-sub { font-size: 9px; }
       .nav-button { width: 37px; height: 37px; font-size: 18px; }
-      .ranking-card { padding: 12px 16px; }
-      .score-value { font-size: 17px; }
     }
   </style>
 </head>
@@ -226,7 +184,6 @@
     <nav class="nav">
       <a href="index.html" class="nav-button" title="ホーム">🏠</a>
       <a href="lesson.html" class="nav-button" title="授業">🎓</a>
-      <!-- ランキング画面なので 🏅 が active -->
       <a href="ranking.html" class="nav-button active" title="ランキング">🏅</a>
       <a href="memo.html" class="nav-button" title="ノート">📖</a>
       <a href="review.html" class="nav-button" title="レポート">📝</a>
@@ -234,38 +191,25 @@
   </header>
 
   <main class="main">
-    <div class="page-title">🏅 分かりやすさスコア Ranking</div>
+    <div class="page-title">🏅 分かりやすさスコア</div>
 
-    <!-- 切り替えタブ -->
     <div class="tab-container">
-      <button class="tab-button active" onclick="switchTab('my')">自分の記録</button>
-      <button class="tab-button" onclick="switchTab('all')">全体ランキング</button>
+      <button class="tab-button active" onclick="switchTab('my')">自己ハイスコア</button>
+      <button class="tab-button" onclick="switchTab('history')">全挑戦の履歴</button>
     </div>
 
-    <!-- ランキング一覧領域 -->
-    <div id="rankingList" class="ranking-list">
-      <!-- JavaScriptで動的に表示 -->
-    </div>
+    <div id="rankingList" class="ranking-list"></div>
   </main>
 
   <script>
-    // サンプルデータ（実際はLocalStorageやデータベースから取得）
-    const myHistory = [
-      { topic: "光合成の仕組み", score: 920, date: "2026/10/01" },
-      { topic: "相対性理論", score: 850, date: "2026/09/28" },
-      { topic: "GDPとは何か", score: 780, date: "2026/09/25" }
-    ];
+    // localStorage から実際の入力データのみを取得
+    function getStoredHistory() {
+      const data = localStorage.getItem('shironeko_history');
+      return data ? JSON.parse(data) : [];
+    }
 
-    const globalRanking = [
-      { name: "みけねこマスター", topic: "量子力学", score: 980 },
-      { name: "ぽてと先生", topic: "簿記3級の基礎", score: 950 },
-      { name: "ひまわり", topic: "光合成の仕組み", score: 920 },
-      { name: "たくみ", topic: "ブロックチェーン", score: 890 },
-      { name: "さくら", topic: "相対性理論", score: 850 }
-    ];
-
-    // 初期表示（自分の記録）
-    renderMyRanking();
+    // 初期表示：自己ハイスコア順
+    renderHighScore();
 
     function switchTab(type) {
       const buttons = document.querySelectorAll('.tab-button');
@@ -273,30 +217,66 @@
 
       if (type === 'my') {
         buttons[0].classList.add('active');
-        renderMyRanking();
+        renderHighScore();
       } else {
         buttons[1].classList.add('active');
-        renderGlobalRanking();
+        renderHistoryList();
       }
     }
 
-    // 自己ランキング表示
-    function renderMyRanking() {
+    // 1. テーマごとの最高得点（ハイスコアランキング）
+    function renderHighScore() {
+      const history = getStoredHistory();
       const container = document.getElementById('rankingList');
-      if (myHistory.length === 0) {
-        container.innerHTML = `<div style="text-align:center; color:#999; padding:40px;">まだ授業の記録がないにゃ🐱<br>授業を受けてスコアを獲得しよう！</div>`;
+
+      if (history.length === 0) {
+        showEmpty(container, "まだ授業の記録がないにゃ🐱<br>レッスンを受けてハイスコアを目指そう！");
         return;
       }
 
-      container.innerHTML = myHistory.map((item, index) => {
-        const rankClass = index < 3 ? `rank-${index + 1}` : '';
+      // テーマごとに最高得点のみを抽出
+      const topicMap = {};
+      history.forEach(item => {
+        if (!topicMap[item.topic] || topicMap[item.topic].score < item.score) {
+          topicMap[item.topic] = item;
+        }
+      });
+
+      // スコアが高い順に並び替え
+      const highScores = Object.values(topicMap).sort((a, b) => b.score - a.score);
+
+      renderCards(container, highScores);
+    }
+
+    // 2. 全挑戦の履歴（日付が新しい順）
+    function renderHistoryList() {
+      const history = getStoredHistory();
+      const container = document.getElementById('rankingList');
+
+      if (history.length === 0) {
+        showEmpty(container, "まだ履歴がないにゃ🐱");
+        return;
+      }
+
+      // 履歴を新しい順に並び替え
+      const sortedHistory = [...history].reverse();
+
+      renderCards(container, sortedHistory, false);
+    }
+
+    // カード描画処理
+    function renderCards(container, list, showRank = true) {
+      container.innerHTML = list.map((item, index) => {
+        const rankClass = showRank && index < 3 ? `rank-${index + 1}` : '';
+        const rankDisplay = showRank ? index + 1 : '🐾';
+
         return `
           <div class="ranking-card">
             <div class="ranking-left">
-              <div class="rank-badge ${rankClass}">${index + 1}</div>
+              <div class="rank-badge ${rankClass}">${rankDisplay}</div>
               <div class="user-info">
-                <div class="user-name">${item.topic}</div>
-                <div class="topic-title">${item.date} の挑戦</div>
+                <div class="user-name">${escapeHtml(item.topic)}</div>
+                <div class="topic-title">${item.date || '記録あり'}</div>
               </div>
             </div>
             <div>
@@ -308,29 +288,19 @@
       }).join('');
     }
 
-    // 全体ランキング表示
-    function renderGlobalRanking() {
-      const container = document.getElementById('rankingList');
-      container.innerHTML = globalRanking.map((item, index) => {
-        const rankClass = index < 3 ? `rank-${index + 1}` : '';
-        return `
-          <div class="ranking-card">
-            <div class="ranking-left">
-              <div class="rank-badge ${rankClass}">${index + 1}</div>
-              <div class="user-info">
-                <div class="user-name">${item.name}</div>
-                <div class="topic-title">テーマ: ${item.topic}</div>
-              </div>
-            </div>
-            <div>
-              <span class="score-value">${item.score}</span>
-              <span class="score-unit">pt</span>
-            </div>
-          </div>
-        `;
-      }).join('');
+    // データが空の場合の表示
+    function showEmpty(container, message) {
+      container.innerHTML = `<div class="empty-message">${message}</div>`;
+    }
+
+    // エスケープ処理（セキュリティ対策）
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
   </script>
 </body>
 </html>
-
