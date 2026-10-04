@@ -148,6 +148,7 @@ body {
   gap: 14px;
 }
 
+/* 🕒ボタンのスタイリング強化 */
 .clock-icon {
   width: 44px;
   height: 44px;
@@ -159,6 +160,15 @@ body {
   justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.clock-icon:hover {
+  background: #ffe399;
+  transform: scale(1.08);
+  box-shadow: 0 3px 8px rgba(217, 119, 6, 0.2);
 }
 
 .card-info {
@@ -272,6 +282,8 @@ body {
   border-radius: 14px;
   background: #fff;
   border: 1px solid #f2e4c4;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .log-msg.user .log-bubble {
@@ -295,10 +307,21 @@ body {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 .action-btn:hover {
   background: #fdf8ed;
+}
+
+.action-btn.resume-btn {
+  background: linear-gradient(135deg, #ffa826, #ff7b00);
+  color: white;
+  border: none;
+}
+
+.action-btn.resume-btn:hover {
+  opacity: 0.9;
 }
 
 /* 空の状態表示 */
@@ -362,13 +385,11 @@ function loadReports() {
   const container = document.getElementById("reportList");
   const countBadge = document.getElementById("reportCount");
 
-  // localStorage から実際の保存データのみを取得
   const savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
 
   countBadge.textContent = `(${savedData.length})`;
   container.innerHTML = "";
 
-  // データが1件もない場合の表示
   if (savedData.length === 0) {
     container.innerHTML = `
       <div class="empty-card">
@@ -382,15 +403,12 @@ function loadReports() {
     return;
   }
 
-  // 保存されているデータがある場合のみ生成（新しい順に表示）
   savedData.slice().reverse().forEach((item, index) => {
-    // リバース時のインデックス計算
     const realIndex = savedData.length - 1 - index;
 
     const card = document.createElement("div");
     card.className = "report-card";
 
-    // 会話ログの生成
     const historyHtml = (item.history || []).map(msg => {
       if (msg.role === "assistant") {
         return `
@@ -414,7 +432,8 @@ function loadReports() {
     card.innerHTML = `
       <div class="card-header" onclick="toggleCard(this)">
         <div class="card-left">
-          <div class="clock-icon">🕒</div>
+          <!-- 🕒アイコンをクリックして記憶復元・授業再開 -->
+          <div class="clock-icon" onclick="resumeLesson(event, ${realIndex})" title="この記憶を復元して続きから教える">🕒</div>
           <div class="card-info">
             <div class="card-topic">${escapeHtml(item.topic || "無題のテーマ")}</div>
             <div class="card-meta">
@@ -433,6 +452,7 @@ function loadReports() {
         </div>
 
         <div class="card-actions">
+          <button class="action-btn resume-btn" onclick="resumeLesson(event, ${realIndex})">🕒 続きから教える</button>
           <button class="action-btn" onclick="copyReport(event, ${realIndex})">📋 会話をコピー</button>
           <button class="action-btn" onclick="deleteReport(event, ${realIndex})">🗑 削除</button>
         </div>
@@ -441,6 +461,22 @@ function loadReports() {
 
     container.appendChild(card);
   });
+}
+
+// 記憶を復元して授業を再開する処理
+function resumeLesson(event, index) {
+  event.stopPropagation(); // カードの開閉（toggleCard）を防ぐ
+
+  const savedData = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
+  const item = savedData[index];
+
+  if (!item || !item.topic) {
+    alert("学習データが見つかりませんでした。");
+    return;
+  }
+
+  // テーマをURLパラメータに付与して授業画面（lesson.html）へ遷移
+  window.location.href = `lesson.html?topic=${encodeURIComponent(item.topic)}`;
 }
 
 // カードの開閉処理
