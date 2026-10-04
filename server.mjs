@@ -1,5 +1,3 @@
-
-// server.mjs
 import express from 'express';
 import session from 'express-session';
 import cors from 'cors';
@@ -7,103 +5,130 @@ import cors from 'cors';
 const app = express();
 const PORT = 3000;
 
-// 1. JSONデータの読み込み設定とCORS設定
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:5500', // フロントエンドのURL（必要に応じて変更）
-  credentials: true // Cookie（セッション情報）のやり取りを許可
+  origin: 'http://localhost:5500', // 必要に応じてフロントエンドのURLに変更
+  credentials: true
 }));
 
-// 2. セッション管理の設定（サーバー側でログイン情報を保持）
 app.use(session({
-  secret: 'shironeko-secret-key-1210', // セッションの暗号化キー
+  secret: 'shironeko-secret-key-1210',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    httpOnly: true, // JavaScriptからの悪意ある読み取りを防止
-    maxAge: 24 * 60 * 60 * 1000 // ログイン有効期限：1日
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 有効期限：1日
   }
 }));
 
-// --- 管理者情報およびユーザーデータベース（メモリ上またはDB） ---
+// 管理者アカウント情報
 const ADMIN_USER = {
   username: "さくら1210",
-  password: "1310"
+  password: "kokoa1310"
 };
 
-// 最終送信時間を記録するマップ（送信制限用）
+// 登録済みユーザーを保持するメモリデータベース
+const registeredUsers = new Map();
+// 初期登録として管理者アカウントを保持
+registeredUsers.set(ADMIN_USER.username, { password: ADMIN_USER.password, isAdmin: true });
+
+// 送信制限用マップ
 const lastSentTimes = new Map();
-const COOLDOWN_TIME = 10000; // 一般ユーザーの制限時間（10秒）
+const COOLDOWN_TIME = 10000; // 10秒制限
 
 
 // ==========================================
-// API 1: ログイン処理
+// API 1: 新規アカウント作成 (新規登録)
 // ==========================================
-app.post('/api/login', (req, res) => {
+app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: 'おなまえとパスワードを入力してね' });
+    return res.status(400).json({ success: false, message: 'おなまえとパスワードを入力してね🐱' });
   }
 
-  // 管理者チェック
-  if (username === ADMIN_USER.username && password === ADMIN_USER.password) {
-    // セッションに管理者情報を保存
-    req.session.user = {
-      username: username,
-      isAdmin: true
-    };
-    return res.json({
-      success: true,
-      message: '管理者としてログインしました！👑',
-      user: { username: username, isAdmin: true }
-    });
+  // 既に登録されているか確認
+  if (registeredUsers.has(username)) {
+    return res.status(400).json({ success: false, message: 'そのおなまえはすでに使われているにゃ！別のなまえにしてね🐱' });
   }
 
-  // 一般ユーザーチェック（例: パスワード判定など。試作として任意の入力でログイン可とする場合）
-  // 実際にはDBで確認します
-  req.session.user = {
-    username: username,
-    isAdmin: false
-  };
+  // 新規ユーザーを登録
+  registeredUsers.set(username, { password: password, isAdmin: false });
+
+  // 登録完了と同時にログイン状態にする
+  req.session.user = { username: username, isAdmin: false };
 
   return res.json({
     success: true,
-    message: 'ログインしました！🐾',
-    user: { username: username, isAdmin: false }
+    message: `ようこそ、${username}先生！アカウントができたにゃ🐾`,
+    user: req.session.user
   });
 });
 
 
 // ==========================================
-// API 2: 現在ログインしている人の情報を取得
+// API 2: ログイン処理
+// ==========================================
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: 'おなまえとパスワードを入力してね🐱' });
+  }
+
+  // 1. 管理者チェック
+  if (username === ADMIN_USER.username && password === ADMIN_USER.password) {
+    req.session.user = { username, isAdmin: true };
+    return res.json({
+      success: true,
+      message: '管理者としてログインしました！👑',
+      user: req.session.user
+    });
+  }
+
+  // 2. 一般ユーザーの照合
+  const userRecord = registeredUsers.get(username);
+  if (userRecord && userRecord.password === password) {
+    req.session.user = { username, isAdmin: userRecord.isAdmin };
+    return res.json({
+      success: true,
+      message: `おかえりなさい、${username}先生！🐾`,
+      user: req.session.user
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: 'おなまえかパスワードがちがうみたいだにゃ…確認してね🐱'
+  });
+});
+
+
+// ==========================================
+// API 3: ログイン状態確認
 // ==========================================
 app.get('/api/me', (req, res) => {
   if (req.session.user) {
-    // ログイン中の場合、ユーザー情報を返す
     res.json({ isLoggedIn: true, user: req.session.user });
   } else {
-    // 未ログインの場合
     res.json({ isLoggedIn: false, user: null });
   }
 });
 
 
 // ==========================================
-// API 3: メッセージ送信（管理者権限で制限解除）
+// API 4: メッセージ送信 (管理者権限で制限解除)
 // ==========================================
 app.post('/api/send-message', (req, res) => {
   const user = req.session.user;
 
-  // 未ログインチェック
   if (!user) {
     return res.status(401).json({ success: false, message: 'ログインが必要だにゃ！' });
   }
 
-  const { message } = req.body;
   const currentTime = Date.now();
 
-  // ★ 管理者判定：管理者の場合は送信制限をスキップ
+  // 管理者以外は制限チェック
   if (!user.isAdmin) {
     const lastSent = lastSentTimes.get(user.username) || 0;
     const timePassed = currentTime - lastSent;
@@ -117,7 +142,6 @@ app.post('/api/send-message', (req, res) => {
     }
   }
 
-  // 送信成功処理
   lastSentTimes.set(user.username, currentTime);
 
   res.json({
@@ -130,20 +154,18 @@ app.post('/api/send-message', (req, res) => {
 
 
 // ==========================================
-// API 4: ログアウト処理
+// API 5: ログアウト
 // ==========================================
 app.post('/api/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({ success: false, message: 'ログアウトに失敗しました' });
     }
-    res.clearCookie('connect.sid'); // セッションCookieの削除
+    res.clearCookie('connect.sid');
     res.json({ success: true, message: 'ログアウトしました🐾' });
   });
 });
 
-
-// サーバー起動
 app.listen(PORT, () => {
   console.log(`🐱 サーバーが起動しました: http://localhost:${PORT}`);
 });
