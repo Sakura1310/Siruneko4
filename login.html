@@ -1,1 +1,308 @@
 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - しるねこ授業</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans JP",
+        "Hiragino Kaku Gothic ProN",
+        sans-serif;
+      /* 指定背景色: #ffefd5 (温かいパステルオレンジ) */
+      background-color: #ffefd5;
+      /* 指定文字色: #cd853f */
+      color: #cd853f;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ヘッダー */
+    .header {
+      width: 100%;
+      height: 70px;
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #f3d2a2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #cd853f;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #cd853f;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    /* メインエリア */
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .login-card {
+      width: 100%;
+      background: #ffffff;
+      border: 2px solid #f5cf9c;
+      border-radius: 24px;
+      padding: 30px 24px;
+      box-shadow: 0 8px 24px rgba(205, 133, 63, 0.12);
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #cd853f;
+      margin: 0 0 6px 0;
+    }
+
+    .card-sub {
+      font-size: 13px;
+      color: #b5722f;
+      margin-bottom: 24px;
+    }
+
+    /* フォーム */
+    .form-group {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #cd853f;
+      margin-bottom: 6px;
+      margin-left: 4px;
+    }
+
+    .form-group input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px;
+      border: 1.5px solid #ebd3b4;
+      border-radius: 14px;
+      font-size: 15px;
+      color: #7c4815;
+      outline: none;
+      background: #fffdfa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #cd853f;
+      box-shadow: 0 0 0 3px rgba(205, 133, 63, 0.2);
+      background: #ffffff;
+    }
+
+    .error-msg {
+      color: #e53e3e;
+      font-size: 12px;
+      margin-top: 5px;
+      margin-left: 4px;
+      display: none;
+    }
+
+    /* ボタン */
+    .submit-btn {
+      width: 100%;
+      height: 50px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 16px;
+      background: #cd853f;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(205, 133, 63, 0.3);
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.92;
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* 下部イラストエリア */
+    .illustration-area {
+      margin-top: 24px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .illustration-img {
+      width: 170px;
+      height: auto;
+      border-radius: 20px;
+      filter: drop-shadow(0 6px 12px rgba(205, 133, 63, 0.2));
+      transition: transform 0.3s ease;
+    }
+
+    .illustration-img:hover {
+      transform: translateY(-4px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ヘッダー -->
+  <header class="header">
+    <a href="index.html" class="brand">
+      <div class="brand-icon">🐾</div>
+      <div>しるねこ授業</div>
+    </a>
+  </header>
+
+  <main class="login-container">
+    <div class="login-card">
+      <h1 class="card-title">ログイン</h1>
+      <p class="card-sub">おなまえとパスワードを入力してね</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <!-- 名前（ひらがな＋数字）入力欄 -->
+        <div class="form-group">
+          <label for="username">おなまえ（ひらがな・数字）</label>
+          <input 
+            type="text" 
+            id="username" 
+            placeholder="例: さくら1210" 
+            required 
+            oninput="validateUsername(this)"
+          >
+          <div class="error-msg" id="nameError">ひらがなと数字で入力してね🐱</div>
+        </div>
+
+        <!-- パスワード（数字4ケタ）入力欄 -->
+        <div class="form-group">
+          <label for="password">パスワード（数字4ケタ）</label>
+          <input 
+            type="password" 
+            id="password" 
+            placeholder="例: 1234" 
+            maxlength="4"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            required
+            oninput="validatePassword(this)"
+          >
+          <div class="error-msg" id="passError">数字4ケタで入力してね🐱</div>
+        </div>
+
+        <button type="submit" class="submit-btn">ログインする 🐾</button>
+      </form>
+    </div>
+
+    <!-- 下の余白に画像を挿入 -->
+    <div class="illustration-area">
+      <img src="1000004488_2.jpg" alt="金木犀と白ねこ" class="illustration-img">
+    </div>
+  </main>
+
+  <script>
+    // 1. おなまえ入力チェック（ひらがな＋数字）
+    function validateUsername(input) {
+      // ひらがな・長音記号・半角全角数字・スペースを許可する正規表現
+      const validRegex = /^[ぁ-んー0-9０-９\s]*$/;
+      const errorEl = document.getElementById("nameError");
+
+      if (!validRegex.test(input.value)) {
+        errorEl.style.display = "block";
+      } else {
+        errorEl.style.display = "none";
+      }
+    }
+
+    // 2. パスワード入力チェック（数字4桁）
+    function validatePassword(input) {
+      // 半角全角数字のみを許可
+      input.value = input.value.replace(/[^0-9]/g, ''); // 半角数字以外を自動除去
+      const errorEl = document.getElementById("passError");
+
+      if (input.value.length > 0 && input.value.length !== 4) {
+        errorEl.style.display = "block";
+      } else {
+        errorEl.style.display = "none";
+      }
+    }
+
+    // 3. ログイン送信処理（サーバー server.mjs へ送信）
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (password.length !== 4) {
+        alert("パスワードは数字4ケタで入力してね🐱");
+        return;
+      }
+
+      try {
+        // Node.js サーバーへ送信
+        const response = await fetch('http://localhost:3000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // セッション（Cookie）維持に必要
+          body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert(result.message);
+          window.location.href = "index.html"; // ログイン成功時にトップページへ
+        } else {
+          alert(result.message || "ログインに失敗しました");
+        }
+
+      } catch (error) {
+        console.error("通信エラー:", error);
+        alert("サーバーに接続できませんでした。server.mjs が起動しているか確認してね🐱");
+      }
+    }
+  </script>
+
+</body>
+</html>
