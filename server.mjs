@@ -28,7 +28,7 @@ app.use(session({
 // --- 管理者情報およびユーザーデータベース（メモリ上またはDB） ---
 const ADMIN_USER = {
   username: "さくら1210",
-  password: "kokoa1310"
+  password: "1310"
 };
 
 // 最終送信時間を記録するマップ（送信制限用）
