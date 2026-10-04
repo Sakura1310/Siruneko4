@@ -297,12 +297,29 @@
       const endpoint = isRegisterMode ? '/api/register' : '/api/login';
 
       try {
-        const response = await fetch(`http://localhost:3000${endpoint}`, {
+        // ★修正ポイント：http://localhost:3000 を削除し、相対パス（endpoint）にする
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ username, password })
         });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert(result.message);
+          window.location.href = "index.html"; // 成功したらホーム画面へ
+        } else {
+          alert(result.message || "失敗しました");
+        }
+
+      } catch (error) {
+        console.error("通信エラー:", error);
+        alert("サーバーに接続できませんでした。Vercelの設定やサーバー接続を確認してね🐱");
+      }
+    }
+
 
         const result = await response.json();
 
