@@ -124,25 +124,22 @@ body {
 <script>
 let currentTopic = "";
 let chatHistory = [];
-const DAILY_LIMIT = 10; // 1日あたりの最大送信回数
+const DAILY_LIMIT = 10;
 
-// 本日の日付文字列（YYYY-MM-DD）を取得
 function getTodayString() {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 
-// 本日の送信回数をLocalStorageから取得
 function getTodayCount() {
   const today = getTodayString();
   const savedData = JSON.parse(localStorage.getItem("mikeneko_usage") || "{}");
   if (savedData.date === today) {
     return savedData.count || 0;
   }
-  return 0; // 日付が変わっていたら0リセット
+  return 0;
 }
 
-// 送信成功時にカウントを＋1して更新
 function incrementTodayCount() {
   const today = getTodayString();
   const currentCount = getTodayCount();
@@ -151,7 +148,6 @@ function incrementTodayCount() {
   return newCount;
 }
 
-// フォームの入力ロック（10回達成時）
 function lockInputForToday() {
   const input = document.getElementById("userInput");
   const sendBtn = document.getElementById("sendBtn");
@@ -165,15 +161,28 @@ function initLesson() {
   currentTopic = urlParams.get('topic') || "簿記";
 
   document.getElementById("displayTopic").textContent = currentTopic;
-  chatHistory = [];
+  
+  // 過去のレポートデータを読み込む（前日の続き復元）
+  let memos = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
+  const existingMemo = memos.find(m => m.topic === currentTopic);
 
   const todayCount = getTodayCount();
   const remaining = DAILY_LIMIT - todayCount;
 
-  const welcomeText = `先生！今日から「${currentTopic}」について教えてくれるんだにゃ？よろしくね！まず何から教えてくれるかにゃ？🐱\n（※本日の残りレッスン：あと ${remaining > 0 ? remaining : 0} 回）`;
-  appendMessage("assistant", welcomeText);
+  if (existingMemo && existingMemo.history && existingMemo.history.length > 0) {
+    // 過去の会話履歴を再現
+    chatHistory = existingMemo.history;
+    chatHistory.forEach(item => {
+      appendMessage(item.role, item.content);
+    });
+    appendMessage("assistant", `おかえりなさいだにゃ！「${currentTopic}」の続きを教えてほしいにゃ！🐱\n（※本日の残りレッスン：あと ${remaining > 0 ? remaining : 0} 回）`);
+  } else {
+    // 初めての学習
+    chatHistory = [];
+    const welcomeText = `先生！今日から「${currentTopic}」について教えてくれるんだにゃ？よろしくね！まず何から教えてくれるかにゃ？🐱\n（※本日の残りレッスン：あと ${remaining > 0 ? remaining : 0} 回）`;
+    appendMessage("assistant", welcomeText);
+  }
 
-  // すでに今日10回使い切っている場合は最初からロック
   if (todayCount >= DAILY_LIMIT) {
     lockInputForToday();
   }
@@ -196,7 +205,6 @@ function appendMessage(role, text, isError = false) {
 }
 
 async function sendMessage() {
-  // 送信前に回数チェック
   if (getTodayCount() >= DAILY_LIMIT) {
     appendMessage("assistant", "今日のレッスン（10回）はここまでだにゃ！明日また教えてね🐾");
     lockInputForToday();
@@ -230,32 +238,27 @@ async function sendMessage() {
 
     const data = await res.json().catch(() => ({}));
 
-    // 成功した場合のみ処理
     if (res.ok && data.reply) {
       appendMessage("assistant", data.reply);
       chatHistory.push({ role: "assistant", content: data.reply });
       saveToReportHistory();
 
-      // 送信成功時にカウントを更新
       const updatedCount = incrementTodayCount();
 
-      // 10回に達したら即時ロック
       if (updatedCount >= DAILY_LIMIT) {
         appendMessage("assistant", "今日の10回のレッスンが終わったにゃ！たくさん教えてくれてありがとう！また明日一緒に勉強しようね🐾");
         lockInputForToday();
       }
     } else {
-      // エラー表示（カウントは増やさない）
       const errorMsg = data.error || `HTTPエラー: ${res.status} ${res.statusText}`;
       appendMessage("assistant", `🚨 【通信失敗の原因】\n${errorMsg}`, true);
-      chatHistory.pop(); // 発言を履歴から削除
+      chatHistory.pop();
     }
 
   } catch (err) {
     appendMessage("assistant", `🚨 【通信例外】\n${err.message}`, true);
     chatHistory.pop();
   } finally {
-    // 10回未満の場合のみ入力欄を再有効化
     if (getTodayCount() < DAILY_LIMIT) {
       input.disabled = false;
       sendBtn.disabled = false;
@@ -268,15 +271,30 @@ function handleKeyPress(e) {
   if (e.key === "Enter") sendMessage();
 }
 
+// レポートデータとユニーク学習日数の保存
 function saveToReportHistory() {
   let memos = JSON.parse(localStorage.getItem("mikeneko_memos") || "[]");
   const now = new Date();
   const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const todaySimple = getTodayString();
+
   const existingIndex = memos.findIndex(m => m.topic === currentTopic);
   
+  let datesList = [];
+  if (existingIndex >= 0 && memos[existingIndex].dates) {
+    datesList = memos[existingIndex].dates;
+  }
+  if (!datesList.includes(todaySimple)) {
+    datesList.push(todaySimple); // 新しい日付なら追加
+  }
+
   const reportData = {
     id: existingIndex >= 0 ? memos[existingIndex].id : Date.now(),
-    topic: currentTopic, date: dateStr, status: "進行中", history: chatHistory
+    topic: currentTopic,
+    date: dateStr,
+    status: "進行中",
+    history: chatHistory,
+    dates: datesList // 日付リストを保存
   };
 
   if (existingIndex >= 0) memos[existingIndex] = reportData;
